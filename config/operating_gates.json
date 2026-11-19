@@ -7,18 +7,26 @@
     "roi_min": null
   },
   "operations": {
-    "pic": "",
-    "approver_id": "",
+    "pic": "NV-TUNG",
+    "approver_id": "NV-HANH",
     "reviewers_on_shift": 1,
-    "review_capacity_per_hour": null,
-    "max_queue_wait_minutes": null,
-    "stop_conditions": [],
-    "alert_channel": "",
+    "review_capacity_per_hour": 6,
+    "max_queue_wait_minutes": 60,
+    "stop_conditions": [
+      "Khi có 1 lỗi ghi oan cho hãng vận chuyển thì NV-TUNG tắt file_carrier_fault và notify_carrier trong tối đa 15 phút",
+      "Khi có 1 lần lộ trường dữ liệu cá nhân cho bên thứ ba thì NV-TUNG tắt notify_carrier trong tối đa 15 phút",
+      "Khi chờ người duyệt từ 60 phút trở lên hoặc có từ 1 ca bị ùn thì NV-TUNG thu hẹp business.pilot_scope",
+      "Khi có tiền hoàn sai lớn hơn 0đ thì NV-TUNG tắt issue_refund, mọi ca hoàn tiền chuyển NV-HANH"
+    ],
+    "alert_channel": "#logix-pilot-alerts",
     "decision_note": false,
     "review_sampling_pct": 0
   },
   "legal": {
-    "pii_fields_blocked_to_third_party": [],
-    "carrier_fault_requires_recorded_cause": false
+    "pii_fields_blocked_to_third_party": [
+      "customer_note",
+      "recipient_contact"
+    ],
+    "carrier_fault_requires_recorded_cause": true
   }
 }
