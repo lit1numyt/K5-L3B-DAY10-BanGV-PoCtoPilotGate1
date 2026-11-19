@@ -45,11 +45,21 @@ def _facts(ctx, order_id):
     return order, parcel, delay, policy
 
 
+MAX_TICKET_CHARS = 2000   # ≈ 650đ tiền đọc (150đ + 1đ/4 ký tự), cộng các bước khác vẫn < 1.500đ/ticket
+
+
 def pre_guard(ctx):
     # Cổng 1 (B4 dòng INVALID, B6 Kỹ thuật 2): ghim chính sách theo ngày hiệu lực, không theo cờ index_active.
     policy = H.effective_policy(ctx.tools.lookup_policies(), ctx.as_of)
     if policy is None:
         return Verdict.escalate("không có chính sách nào có hiệu lực hôm nay")
+    # Vòng 2 (S5, bản cứng hoá): ticket quá dài (khách dán cả danh sách hàng) thì chỉ đọc phần đầu, theo ĐỘ DÀI,
+    # không theo mã ticket. Yêu cầu của khách nằm ở đầu; tiền, độ trễ, sổ cái vẫn lấy từ nguồn sự thật nên phần bị cắt
+    # không đổi được quyết định. Giữ tiền LLM dưới ngân sách 1.500đ mà vẫn phục vụ ca hợp lệ thay vì chuyển người.
+    text = (ctx.ticket or {}).get("text") or ""
+    if len(text) > MAX_TICKET_CHARS:
+        ctx.log("ticket_truncated", original_chars=len(text), kept_chars=MAX_TICKET_CHARS)
+        return Verdict.rewrite("chỉ đọc phần đầu của ticket quá dài", text[:MAX_TICKET_CHARS], policy_id=policy["policy_id"])
     return Verdict.allow(policy_id=policy["policy_id"])
 
 

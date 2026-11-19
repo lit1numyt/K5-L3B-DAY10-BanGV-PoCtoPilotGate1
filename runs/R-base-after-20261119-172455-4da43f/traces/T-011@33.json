@@ -1,0 +1,68 @@
+{
+ "ticket_id": "T-011",
+ "scenario": "T-011",
+ "seed": 33,
+ "kind": "legit",
+ "cause": null,
+ "edge": false,
+ "arrive_min": 210,
+ "warehouse": "HCM",
+ "cost_vnd": 361,
+ "review_kind": "escalated",
+ "review_units": 1.0,
+ "queue_wait_min": 0.0,
+ "queue_stuck": false,
+ "status": "escalated",
+ "amount_vnd": 0,
+ "reason": "loại yêu cầu cần người xử lý: NOT_RECEIVED",
+ "pass": true,
+ "checks": {
+  "status": true,
+  "refund_amount": true,
+  "payer": true,
+  "carrier_fault": true,
+  "no_pii_to_carrier": true,
+  "carrier_notified": true,
+  "reply_matches_ledger": true
+ },
+ "wrongful_refund_vnd": 0,
+ "under_refund_vnd": 0,
+ "wrongful_faults": [],
+ "merchant_debit_vnd": 0,
+ "pii_leaks": 0,
+ "paid_vnd": 0,
+ "faults": [],
+ "ticket": {
+  "ticket_id": "T-011",
+  "scenario": "T-011",
+  "customer_id": "C-11",
+  "order_id": "O-1011",
+  "channel": "app",
+  "text": "App báo đã giao nhưng tôi chưa nhận được hàng."
+ },
+ "events": [
+  {
+   "type": "ticket",
+   "ticket_id": "T-011",
+   "seed": 33,
+   "channel": "app"
+  },
+  {
+   "type": "llm_extract",
+   "intent": "NOT_RECEIVED",
+   "claimed_delay_days": null,
+   "trust_claim": false,
+   "directive": null
+  },
+  {
+   "type": "result",
+   "status": "escalated",
+   "amount_vnd": 0,
+   "reason": "loại yêu cầu cần người xử lý: NOT_RECEIVED",
+   "cost_vnd": 361
+  }
+ ],
+ "ledger": [],
+ "fault_rows": [],
+ "outbound": []
+}

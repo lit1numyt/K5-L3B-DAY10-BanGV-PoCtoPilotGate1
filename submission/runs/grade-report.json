@@ -1,8 +1,8 @@
 {
- "run_id": "R-S5-grade-20261119-165126-c0aedd",
+ "run_id": "R-S5-grade-20261119-172528-4da43f",
  "incident": "S5",
  "grader_version": "lab10-1.0",
- "code_hash": "c0aedd94bcdec79e2b876e9c225e5e77b5fc90efb093e1621aaa14d7743d60f7",
+ "code_hash": "4da43fb381cefcc9ea354610b3343165faf2dd265d3267384330514b7f9477cb",
  "integrity": {
   "ok": true,
   "changed": [],
@@ -1163,12 +1163,12 @@
    "wrongful_carrier_faults": 0,
    "merchant_debit_vnd": 0,
    "pii_leaks": 0,
-   "escalation_rate": 0.1667,
+   "escalation_rate": 0.0,
    "failed": [],
-   "review_rate": 0.1667,
+   "review_rate": 0.0,
    "coverage": 0.6,
-   "cost_per_ticket_vnd": 3897,
-   "roi": 1.57,
+   "cost_per_ticket_vnd": 2388,
+   "roi": 3.19,
    "queue_wait_max_min": 0.0,
    "queue_stuck": 0,
    "auto_refund_day_max_vnd": 98000,
@@ -1176,12 +1176,12 @@
     "tickets_in_scope_per_day": 18.0,
     "out_of_scope_per_day": 12,
     "coverage": 0.6,
-    "review_rate": 0.1667,
+    "review_rate": 0.0,
     "queue": {
      "reviewers_on_shift": 1,
      "capacity_per_hour": 6.0,
      "sla_minutes": 60,
-     "queued_per_day": 3.0,
+     "queued_per_day": 0.0,
      "wait_avg_min": 0.0,
      "wait_max_min": 0.0,
      "stuck": 0,
@@ -1190,15 +1190,15 @@
      "trust_why": []
     },
     "cost": {
-     "cost_per_ticket_vnd": 3897,
+     "cost_per_ticket_vnd": 2388,
      "manual_cost_per_ticket_vnd": 10000,
-     "agent_cost_per_day_vnd": 10143,
-     "review_cost_per_day_vnd": 30000,
+     "agent_cost_per_day_vnd": 12993,
+     "review_cost_per_day_vnd": 0,
      "standby_cost_per_day_vnd": 30000,
      "wrongful_refund_per_day_vnd": 0,
-     "net_saving_per_day_vnd": 109857,
-     "roi": 1.57,
-     "llm_cost_max_per_ticket_vnd": 665,
+     "net_saving_per_day_vnd": 137007,
+     "roi": 3.19,
+     "llm_cost_max_per_ticket_vnd": 1150,
      "llm_cost_ceiling_vnd": 1500
     },
     "refund": {
@@ -1228,8 +1228,8 @@
      },
      "HN": {
       "tickets_per_day": 8.0,
-      "cost_per_ticket_vnd": 4214,
-      "review_rate": 0.375,
+      "cost_per_ticket_vnd": 820,
+      "review_rate": 0.0,
       "worse_than_manual": false
      }
     },
@@ -1237,9 +1237,9 @@
     "violations": []
    },
    "monitors": {
-    "escalation_rate": 0.166667,
+    "escalation_rate": 0.0,
     "ledger_review_signals": 25.0,
-    "max_warehouse_cost_per_ticket": 4214.25
+    "max_warehouse_cost_per_ticket": 820.5
    },
    "by_segment": {
     "warehouse": [
@@ -1280,7 +1280,7 @@
       "wrongful_refund_vnd": 0,
       "wrongful_carrier_faults": 0,
       "pii_leaks": 0,
-      "cost_per_ticket_vnd": 4214,
+      "cost_per_ticket_vnd": 820,
       "worse_than_manual": false
      }
     ],
@@ -1353,13 +1353,13 @@
    "wrongful_carrier_faults": -20,
    "merchant_debit_vnd": 0,
    "pii_leaks": 0,
-   "escalation_rate": -0.2333
+   "escalation_rate": -0.4
   }
  },
  "run_ids": {
-  "before": "R-S5-before-20261119-165128-c0aedd",
-  "prepared": "R-S5-prepared-20261119-165128-c0aedd",
-  "after": "R-S5-after-20261119-165128-c0aedd"
+  "before": "R-S5-before-20261119-172530-4da43f",
+  "prepared": "R-S5-prepared-20261119-172530-4da43f",
+  "after": "R-S5-after-20261119-172530-4da43f"
  },
  "visible": {
   "before_red": true,
@@ -1401,7 +1401,7 @@
     "name": "max_warehouse_cost_per_ticket",
     "stage": "after",
     "base": 10359.0,
-    "incident": 4214.25
+    "incident": 820.5
    }
   ],
   "errors": []
@@ -1430,5 +1430,5 @@
  "hard_gates_ok": true,
  "score": null,
  "verdict": "PASS-VISIBLE (chưa chạy test ẩn)",
- "seconds": 2.4
+ "seconds": 2.333
 }
