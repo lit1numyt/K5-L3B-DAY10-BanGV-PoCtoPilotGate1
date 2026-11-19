@@ -68,7 +68,7 @@ Chưa cập nhật.
 
 ### Phần việc phụ trách
 
-Phân tích rủi ro và tổng hợp. Vòng 1: Phiếu A mục A3–A5 (câu 1.5, 1.6) cùng vai Sản phẩm và kinh doanh, ký tiêu chí; Phiếu B mục B6 (pre-mortem, câu 2.5), B0–B3, B7.1–B7.4 (bản nháp để Dương, Hiếu duyệt), B8 (v1, theo phương án bàn chốt); PIC dòng 3 (Bảo mật) và dòng 5 (Hiệu năng) ở checklist B5. Vòng 2: Phiếu C mục C1, C6, C9, C10 (cổng vòng 1 đỡ được gì, fault tree trước và sau, risk register) và gom bằng chứng C0. File: `config/acceptance_criteria.json`, `lab10/guards.py` (bản đầu của 3 cổng), `config/operating_gates.json` mục `business` (đề xuất).
+Phân tích rủi ro và tổng hợp. Vòng 1: Phiếu A mục A3–A5 (câu 1.5, 1.6) cùng vai Sản phẩm và kinh doanh, ký tiêu chí; Phiếu B mục B6 (pre-mortem, câu 2.5), B0–B3, B7.1–B7.4 (bản nháp để Dương, Hiếu duyệt), B8 (v1, theo phương án bàn chốt); PIC dòng 3 (Bảo mật) và dòng 5 (Hiệu năng) ở checklist B5. Vòng 2: nhận thẻ S5 và lấy mốc prepared; Phiếu C mục C0, C1, C2, C6, C9, C10, C12 (nhật ký lần chạy, đối chiếu pre-mortem, bảng soát lỗi, fault tree trước và sau, risk register, quyết định v2 theo phương án bàn chốt), bổ sung C7, C8; điền `submission/submission.json` (v2, ba dòng); chạy lệnh 7. File: `config/acceptance_criteria.json`, `lab10/guards.py` (bản đầu của 3 cổng; vòng 2: nhánh `deny` khi đơn đã hoàn đủ và sửa câu trả lời khách), `lab10/monitors.py` (`max_warehouse_cost_per_ticket`), `config/operating_gates.json` mục `business` (vòng 2: `pilot_scope` bỏ HCM-B2B), `.gitattributes`.
 
 ### Đóng góp cụ thể
 
@@ -76,15 +76,19 @@ Phân tích rủi ro và tổng hợp. Vòng 1: Phiếu A mục A3–A5 (câu 1.
 - Viết lý do pre-mortem cho lăng kính Kỹ thuật và Kinh doanh, đề xuất 3 lý do thành cổng phòng ngừa.
 - Viết bản đầu 3 cổng trong `guards.py` (ghim chính sách theo ngày; số tiền hoàn ≤ quyền lợi theo tracking DB; lỗi hãng theo DB + trần 2 lỗi/hãng/ngày + payload hãng chỉ giữ `carrier_notice_fields`); Dương bổ sung nhánh chuyển duyệt trước khi hoàn.
 - Chạy 2 lần thử tách để chứng minh cổng nào sửa lỗi nào; chạy 2 ticket hiểm `--adhoc` (B7.3); chạy `lab10.checkpoint` và mốc prepared.
+- Vòng 2: kiểm thẻ S5 khớp hash MANIFEST, nhận thẻ và chạy `lab10.grade` trước khi sửa (mốc prepared); đọc trace của cả kịch bản để tách lỗ theo ba dòng tiền (tiền mất do hoàn lặp, công người ở kho sỉ, tiền máy ticket dài).
+- Sau khi Dương thêm cổng sổ cái (an toàn về 0 nhưng ROI 0,28), đổi lần lượt MỘT thứ mỗi lần chạy: cắt HCM-B2B (ROI 0,63), đơn đã hoàn đủ thì `deny` (chi phí 3.897đ/ticket, ROI 1,57); thêm chỉ số chi phí theo kho cho khớp C8 của Hiếu; kiểm bộ nền không regression; `grade` PASS-VISIBLE.
+- Soát chéo phiếu với code (C7 ghi đã đổi phạm vi khi config chưa đổi; C8 mô tả chỉ số chưa có) và sửa cho khớp; phát hiện manifest bài nộp lệch hash do CRLF/LF trên Windows, thêm `.gitattributes` và kiểm lại lệnh 7 trên bản clone sạch.
 - Dùng trợ lý AI (Claude) để đọc code, đối chiếu số liệu và soạn nháp; mọi con số đã đối chiếu với report và trace, các góp ý của Khoa, Dương, Hiếu đã sửa vào phiếu.
 
 ### Bằng chứng
 
-Commit `9f04409` (Sign acceptance criteria), `ea80683` (Phiếu A), `1143aa0` (B6), `2dad252` (3 cổng, Phiếu B B0–B7), `0492d62`, `614acc2` (sửa theo góp ý), `da271a8` (chốt vòng 1, v1). Lần chạy `runs/R-base-after-20261119-152602-8bcbf9`, `R-base-after-20261119-153944-dbc798`, `R-base-after-20261119-153945-4159b5`, `R-base-prepared-20261119-154633-c74adf`. Phiếu B mục B0 dòng 2–5, B6, B7.1, B7.3, B8.
+Commit `9f04409` (Sign acceptance criteria), `ea80683` (Phiếu A), `1143aa0` (B6), `2dad252` (3 cổng, Phiếu B B0–B7), `0492d62`, `614acc2` (sửa theo góp ý), `da271a8` (chốt vòng 1, v1). Lần chạy `runs/R-base-after-20261119-152602-8bcbf9`, `R-base-after-20261119-153944-dbc798`, `R-base-after-20261119-153945-4159b5`, `R-base-prepared-20261119-154633-c74adf`. Phiếu B mục B0 dòng 2–5, B6, B7.1, B7.3, B8. Vòng 2: commit `ca7f79e` (nhận thẻ S5), `89c733b` (mốc prepared), `f4b5f38` (C0, C1, C6), `ba5acb2` (C2), `11f0cf8` (C10), `805e48e` (bài nộp: phạm vi, deny, chỉ số, C0, C7–C9, C12), `7665e54` (`.gitattributes`). Lần chạy `R-S5-grade-20261119-161001-c74adf` (prepared, trước khi sửa), `R-S5-after-20261119-165005-d8b05d`, `R-S5-after-20261119-165052-2a4ad3`, `R-base-after-20261119-165117-c0aedd`, `R-S5-grade-20261119-165126-c0aedd` (PASS-VISIBLE). Phiếu C mục C0–C2, C6, C9, C10, C12.
 
 ### Exit ticket
 
-(Phúc tự viết cuối buổi: một điều học được, một điều còn chưa chắc.)
+- **Học được:** cổng vòng 1 của bàn nghĩ theo từng ticket nên bỏ sót tác hại theo đơn và theo sổ cái (hoàn lặp khi khách nhắn lại, CSKH đã hoàn tay); và một cổng an toàn có thể chuyển chi phí sang chỗ khác (chặn đúng nhưng chuyển người quá nhiều làm ROI vẫn âm). Chỉ khi mỗi lần chạy đổi MỘT thứ thì mới tách được cổng nào sửa lỗi nào và cái giá của nó.
+- **Còn chưa chắc:** cổng sổ cái chỉ thấy khoản hoàn đã được ghi sổ lúc kiểm tra; mô phỏng chạy tuần tự nên chưa biết ngoài thực tế, khi CSKH ghi sổ trễ hoặc hai ticket cùng đơn tới đồng thời, hoàn trùng còn xảy ra bao nhiêu và quy trình ghi sổ trước khi đóng cuộc gọi có đủ không.
 
 ## LeHienHieu-2A202603940
 
