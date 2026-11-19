@@ -74,6 +74,19 @@ def write_gate(ctx, action):
         if f is None or f[3] is None:
             return Verdict.escalate("thiếu dữ liệu đơn hoặc chính sách để kiểm số tiền hoàn")
         order, parcel, delay, policy = f
+        # Cứng hoá (PRD v1.1 FM-02, C11 dòng 4): agent lùi sang tìm phê duyệt theo customer_id và dùng bản đầu tiên.
+        # Phê duyệt chỉ hợp lệ khi đúng đơn, đúng khách, còn hiệu lực, chưa hết hạn và đủ số tiền; sai một điều → người duyệt.
+        if action.get("approval_id"):
+            ap = next(iter(ctx.tools.lookup_approvals(approval_id=action["approval_id"])), None)
+            problem = ("không tìm thấy" if ap is None else
+                       "không đúng đơn" if ap.get("order_id") != order["order_id"] else
+                       "không đúng khách" if ap.get("customer_id") != order.get("customer_id") else
+                       "không còn hiệu lực" if ap.get("status") != "valid" else
+                       "đã hết hạn" if H.d(ap["expires_at"]) < H.d(ctx.as_of) else
+                       "không đủ số tiền" if action.get("amount_vnd", 0) > ap.get("max_vnd", 0) else None)
+            if problem:
+                ctx.log("approval_invalid", approval_id=action["approval_id"], problem=problem)
+                return Verdict.escalate(f"phê duyệt {action['approval_id']} {problem}: chuyển người duyệt")
         entitled = H.entitlement_vnd(policy, order, delay, parcel.get("delay_cause"))
         rows = ctx.tools.ledger_rows(order_id=order["order_id"])
         if any(r.get("ticket_id") == action.get("ticket_id") for r in rows):
