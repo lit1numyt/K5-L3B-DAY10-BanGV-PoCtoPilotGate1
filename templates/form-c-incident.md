@@ -323,6 +323,8 @@ python3 -m lab10.grade --incident Sx
 | Nhánh fault tree | Nguyên nhân | Chỗ sửa (hàm + nhánh trong `guards.py`, hoặc khoá trong `operating_gates.json`) | Tầng (phát hiện / chặn / giới hạn thiệt hại / vận hành) | GIẢM khả năng hay NGĂN hẳn? Vì sao | Mã lần chạy sau khi sửa |
 |---|---|---|---|---|---|
 | Kinh doanh — chi phí xử lý tại kho sỉ | HCM-B2B tốn **10.382đ/ticket** ở mốc `prepared`, cao hơn **10.000đ/ticket** nếu làm tay. Nhiều ca vẫn cần CSKH sau khi trợ lý đã đọc. | Đổi `business.pilot_scope` sang danh sách **HN, HCM, DN, CT**. Ticket HCM-B2B đi theo luồng CSKH thủ công. | Vận hành / giới hạn thiệt hại | **Ngăn** ticket được nhận diện thuộc HCM-B2B đi qua trợ lý trong phạm vi đã cấu hình. **Giảm** chi phí trùng ở kho này. Hiệu quả chi phí và độ phủ của phần còn lại cần đo lại. | `[Mã lần chạy chỉ đổi phạm vi]` |
+| Kỹ thuật — hoàn trùng / hoàn thiếu | Cờ trạng thái đơn có thể cũ, còn sổ cái đã có khoản hoàn tự động hoặc thủ công. | `lab10/guards.py`: `write_gate` trước `issue_refund` đối chiếu các dòng sổ cái theo đơn; tính phần quyền lợi còn lại; nếu đã đủ thì chuyển người, nếu mới hoàn một phần thì giới hạn số tiền còn lại; chặn lần ghi lặp cùng ticket. | Chặn / giới hạn thiệt hại | **Ngăn** ghi vượt quyền lợi theo các dòng có trong sổ cái ở thời điểm kiểm tra trong mô phỏng tuần tự; **giảm** rủi ro ngoài thực tế vì chưa bảo đảm sổ cái đầy đủ hoặc giao dịch đồng thời. | `R-S5-after-20261119-163550-b04771` |
+| Kỹ thuật — ghi lỗi hãng trùng | Hai ticket cùng đơn có thể ghi lỗi lặp cho một kiện. | `write_gate` trước `file_carrier_fault` kiểm tra `fault_rows` theo đơn và kiện; đã có thì không ghi tiếp. | Chặn | **Ngăn** ghi lặp khi dòng lỗi cũ có trong sổ lỗi được tra cứu; chưa bảo đảm với ghi đồng thời hoặc nguồn lỗi ngoài hệ thống. | `R-S5-after-20261119-163550-b04771` |
 
 ---
 
@@ -343,6 +345,9 @@ Thẻ S5 dùng mục này cho một con số kinh doanh: chi phí mỗi ticket t
 | **Khung thời gian / ngưỡng báo động** | |
 | **Điểm mù** (chỉ số này KHÔNG thấy gì) | |
 | Giá trị trên bộ nền · trên thẻ (đọc mục `monitor` của report) | |
+
+
+**Chỉ số kỹ thuật bổ sung — Dương:** `ledger_review_signals` đếm số lượt xử lý có ít nhất một sự kiện cổng `refund_already_settled`, `refund_remainder_adjusted` hoặc `refund_retry_blocked`; lấy từ `events` không có nhãn, mỗi `ticket@seed` tính tối đa một lượt. Báo và đối chiếu sổ cái khi giá trị > 0 trong kỳ theo dõi. Report `R-S5-grade-20261119-163704-75fa05`: bộ nền **0**, thẻ S5 **25 lượt trên 5 seed**. Chỉ số phản ánh cổng đã phát hiện tình huống cần đối chiếu, không khẳng định các khoản đó đều là hoàn sai thực tế; không thấy giao dịch không nằm trong sổ cái hay không đi qua cổng.
 
 ---
 
