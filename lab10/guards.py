@@ -73,7 +73,8 @@ def write_gate(ctx, action):
         remaining = max(0, entitled - paid)
         if paid and remaining == 0:
             ctx.log("refund_already_settled", order_id=order["order_id"], paid=paid, entitled=entitled)
-            return Verdict.escalate("đơn đã được hoàn đủ theo sổ cái: chuyển người đối chiếu")
+            # Nhãn ưu tiên "denied": không hoàn thêm, không tốn công người duyệt; câu trả lời được sửa ở nhánh send_reply.
+            return Verdict.deny("đơn đã được hoàn đủ theo sổ cái")
         if action.get("amount_vnd", 0) > entitled:
             ctx.log("refund_over_entitlement", asked=action.get("amount_vnd"), entitled=entitled, db_delay_days=delay)
             return Verdict.escalate(f"số tiền hoàn vượt quyền lợi theo tracking DB ({entitled}đ): chuyển người duyệt")
@@ -117,6 +118,16 @@ def write_gate(ctx, action):
             return Verdict.modify("ghi lỗi theo kiện trễ và số ngày trong tracking DB", **fix)
 
     # Cổng 3 (tiếp, B4 dòng Dữ liệu gửi bên thứ ba): chỉ gửi hãng các trường chính sách cho phép.
+    # Vòng 2 (S5): khoản hoàn bị chặn vì đơn đã được hoàn trước đó thì câu trả lời phải khớp sổ cái,
+    # không được nói "LogiX chưa hoàn khoản nào".
+    if tool == "send_reply":
+        settled = any(e.get("type") == "guard" and e.get("kind") in ("refund_already_settled", "refund_retry_blocked")
+                      for e in ctx.events)
+        if settled and not action.get("amount_vnd"):
+            return Verdict.modify("trả lời theo sổ cái: đơn đã được hoàn trước đó",
+                                  text="Đơn này đã được LogiX hoàn tiền trước đó theo sổ cái, nên lần này không hoàn thêm. "
+                                       "Nếu cần đối chiếu, CSKH sẽ liên hệ lại.")
+
     if tool == "notify_carrier":
         policy = H.effective_policy(ctx.tools.lookup_policies(), ctx.as_of)
         allowed = set((policy or {}).get("carrier_notice_fields") or [])

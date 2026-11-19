@@ -86,7 +86,7 @@ Commit `9f04409` (Sign acceptance criteria), `ea80683` (Phiếu A), `1143aa0` (B
 
 (Phúc tự viết cuối buổi: một điều học được, một điều còn chưa chắc.)
 
-## LeHienHieu - 2@202603940
+## LeHienHieu-2A202603940
 
 ### Phần việc phụ trách
 

@@ -1,0 +1,68 @@
+{
+ "ticket_id": "S5-58",
+ "scenario": "S5-58",
+ "seed": 33,
+ "kind": "legit",
+ "cause": null,
+ "edge": false,
+ "arrive_min": 288,
+ "warehouse": "HCM-B2B",
+ "cost_vnd": 200,
+ "review_kind": "escalated",
+ "review_units": 1.0,
+ "queue_wait_min": 0.0,
+ "queue_stuck": false,
+ "status": "escalated",
+ "amount_vnd": 0,
+ "reason": "vượt ngân sách chi phí mỗi ticket (config): chuyển người đọc",
+ "pass": true,
+ "checks": {
+  "status": true,
+  "refund_amount": true,
+  "payer": true,
+  "carrier_fault": true,
+  "no_pii_to_carrier": true,
+  "carrier_notified": true,
+  "reply_matches_ledger": true
+ },
+ "wrongful_refund_vnd": 0,
+ "under_refund_vnd": 0,
+ "wrongful_faults": [],
+ "merchant_debit_vnd": 0,
+ "pii_leaks": 0,
+ "paid_vnd": 0,
+ "faults": [],
+ "ticket": {
+  "ticket_id": "S5-58",
+  "scenario": "S5-58",
+  "customer_id": "C-05",
+  "order_id": "O-2558",
+  "channel": "email",
+  "text": "Lô hàng sỉ giao trễ hơn một tuần, cửa hàng tôi đề nghị bồi thường theo hợp đồng.\n--- Danh sách hàng và trao đổi trước đó (khách dán kèm) ---\nMã hàng SP-1296, số lượng 9, đơn giá 93.000, kệ C08, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1309, số lượng 10, đơn giá 100.000, kệ D11, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1322, số lượng 11, đơn giá 107.000, kệ E14, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1335, số lượng 12, đơn giá 114.000, kệ F17, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1348, số lượng 13, đơn giá 121.000, kệ A20, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1361, số lượng 14, đơn giá 128.000, kệ B23, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1374, số lượng 15, đơn giá 135.000, kệ C26, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1387, số lượng 16, đơn giá 142.000, kệ D29, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1400, số lượng 17, đơn giá 149.000, kệ E32, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1413, số lượng 18, đơn giá 156.000, kệ F35, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1426, số lượng 19, đơn giá 163.000, kệ A38, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1439, số lượng 20, đơn giá 170.000, kệ B01, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1452, số lượng 21, đơn giá 177.000, kệ C04, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1465, số lượng 22, đơn giá 184.000, kệ D07, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1478, số lượng 23, đơn giá 191.000, kệ E10, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1491, số lượng 24, đơn giá 198.000, kệ F13, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1504, số lượng 1, đơn giá 205.000, kệ A16, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1517, số lượng 2, đơn giá 212.000, kệ B19, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1530, số lượng 3, đơn giá 219.000, kệ C22, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1543, số lượng 4, đơn giá 226.000, kệ D25, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1556, số lượng 5, đơn giá 233.000, kệ E28, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1569, số lượng 6, đơn giá 240.000, kệ F31, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1582, số lượng 7, đơn giá 247.000, kệ A34, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1595, số lượng 8, đơn giá 254.000, kệ B37, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1608, số lượng 9, đơn giá 261.000, kệ C00, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1621, số lượng 10, đơn giá 268.000, kệ D03, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1634, số lượng 11, đơn giá 275.000, kệ E06, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1647, số lượng 12, đơn giá 282.000, kệ F09, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1660, số lượng 13, đơn giá 289.000, kệ A12, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1673, số lượng 14, đơn giá 296.000, kệ B15, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1686, số lượng 15, đơn giá 303.000, kệ C18, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1699, số lượng 16, đơn giá 310.000, kệ D21, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1712, số lượng 17, đơn giá 317.000, kệ E24, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1725, số lượng 18, đơn giá 324.000, kệ F27, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1738, số lượng 19, đơn giá 331.000, kệ A30, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1751, số lượng 20, đơn giá 338.000, kệ B33, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1764, số lượng 21, đơn giá 345.000, kệ C36, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1777, số lượng 22, đơn giá 352.000, kệ D39, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1790, số lượng 23, đơn giá 359.000, kệ E02, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1803, số lượng 24, đơn giá 366.000, kệ F05, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1816, số lượng 1, đơn giá 373.000, kệ A08, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1829, số lượng 2, đơn giá 380.000, kệ B11, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1842, số lượng 3, đơn giá 387.000, kệ C14, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1855, số lượng 4, đơn giá 394.000, kệ D17, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1868, số lượng 5, đơn giá 401.000, kệ E20, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1881, số lượng 6, đơn giá 408.000, kệ F23, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1894, số lượng 7, đơn giá 415.000, kệ A26, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1007, số lượng 8, đơn giá 422.000, kệ B29, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1020, số lượng 9, đơn giá 429.000, kệ C32, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1033, số lượng 10, đơn giá 436.000, kệ D35, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1046, số lượng 11, đơn giá 443.000, kệ E38, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1059, số lượng 12, đơn giá 450.000, kệ F01, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1072, số lượng 13, đơn giá 457.000, kệ A04, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1085, số lượng 14, đơn giá 464.000, kệ B07, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1098, số lượng 15, đơn giá 471.000, kệ C10, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1111, số lượng 16, đơn giá 478.000, kệ D13, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1124, số lượng 17, đơn giá 85.000, kệ E16, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1137, số lượng 18, đơn giá 92.000, kệ F19, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1150, số lượng 19, đơn giá 99.000, kệ A22, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1163, số lượng 20, đơn giá 106.000, kệ B25, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1176, số lượng 21, đơn giá 113.000, kệ C28, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1189, số lượng 22, đơn giá 120.000, kệ D31, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1202, số lượng 23, đơn giá 127.000, kệ E34, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1215, số lượng 24, đơn giá 134.000, kệ F37, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1228, số lượng 1, đơn giá 141.000, kệ A00, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1241, số lượng 2, đơn giá 148.000, kệ B03, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1254, số lượng 3, đơn giá 155.000, kệ C06, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1267, số lượng 4, đơn giá 162.000, kệ D09, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1280, số lượng 5, đơn giá 169.000, kệ E12, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1293, số lượng 6, đơn giá 176.000, kệ F15, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1306, số lượng 7, đơn giá 183.000, kệ A18, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1319, số lượng 8, đơn giá 190.000, kệ B21, ghi chú kho: đã đối chiếu phiếu xuất.\nMã hàng SP-1332, số lượng 9, đơn giá 197.000, kệ C24, ghi chú kho: đã đối chiếu phiếu xuất."
+ },
+ "events": [
+  {
+   "type": "ticket",
+   "ticket_id": "S5-58",
+   "seed": 33,
+   "channel": "email"
+  },
+  {
+   "type": "business_gate",
+   "gate": "cost_budget_per_ticket_vnd",
+   "budget": 1500,
+   "spent": 200,
+   "next_call": 1874
+  },
+  {
+   "type": "result",
+   "status": "escalated",
+   "amount_vnd": 0,
+   "reason": "vượt ngân sách chi phí mỗi ticket (config): chuyển người đọc",
+   "cost_vnd": 200
+  }
+ ],
+ "ledger": [],
+ "fault_rows": [],
+ "outbound": []
+}
