@@ -137,7 +137,7 @@ Trường mà nếu sai thì tiền hoặc lỗi hãng sai theo: `parcels[].deli
 Chúng tôi biết thế giới thật sẽ làm dữ liệu lệch ở: `ngày đổi chính sách và mùa bão`. Dấu hiệu nhìn thấy sớm nhất: `policy_id trong trace khác chính sách theo ngày; tỉ lệ ticket có delay_cause = FORCE_MAJEURE tăng`.
 
 **Ví dụ drift trong 3 tháng tới** (lấy từ dòng "thế giới thật làm dữ liệu lệch"): cái gì đổi `REFUND-v3 → REFUND-v4: hạn mức tự động 200.000đ → 100.000đ, min_days_fee 3 → 2, trễ do bão không còn ghi lỗi hãng` · đổi ngày nào `01/12/2026` ·
-trường nào cho thấy `policies[].effective_from`, `fault_causes`, `auto_limit_vnd` (và `index_active` có thể chưa đổi) · con số nào của Bản tiêu chí bị ảnh hưởng `wrongful_carrier_faults_max` (lỗi oan cho trễ do bão), `wrongful_refund_vnd_max` (hoàn vượt hạn mức mới), `escalation_rate_max` (nhiều ca vượt 100.000đ phải chuyển người)`.
+trường nào cho thấy `policies[].effective_from`, `fault_causes`, `auto_limit_vnd` (và `index_active` có thể chưa đổi) · con số nào của Bản tiêu chí bị ảnh hưởng `wrongful_carrier_faults_max` (lỗi oan cho trễ do bão), `wrongful_refund_vnd_max` (hoàn vượt hạn mức mới), `escalation_rate_max` (từ 01/12, khoản hoàn **trên 100.000đ** vượt `auto_limit_vnd` mới nên phải có phê duyệt hợp lệ của NV-HANH; không có phê duyệt thì trợ lý chuyển người duyệt, tỉ lệ chuyển người tăng).
 Đây là đầu vào đổi hay quan hệ vào–ra đổi? Chỉ số nào sẽ phát hiện? `Quan hệ vào–ra đổi (cùng một đơn trễ, đầu ra đúng thay đổi theo chính sách). Phát hiện bằng: đếm lần policy_id dùng ≠ effective_policy theo ngày; escalation_rate tăng vọt sau 01/12; lỗi hãng có delay_cause = FORCE_MAJEURE > 0`
 
 **Ví dụ một dòng (đừng chép):** trường then chốt `parcels[].delivered_date` · bản ghi do máy quét ở điểm phát tạo ra, là nguồn
