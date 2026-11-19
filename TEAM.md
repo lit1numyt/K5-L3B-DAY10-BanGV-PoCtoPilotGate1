@@ -82,20 +82,25 @@ Commit `9f04409` (Sign acceptance criteria), `ea80683` (Phiếu A), `1143aa0` (B
 
 (Phúc tự viết cuối buổi: một điều học được, một điều còn chưa chắc.)
 
-## LeHienHieu - 2@202603940
+## LeHienHieu-2A202603940
 
 ### Phần việc phụ trách
 
-Vai trong bàn; câu nào của đề, mục nào của phiếu A/B/C, file nào (`lab10/guards.py`, `config/operating_gates.json`, …).
+Vai **Sản phẩm và kinh doanh**, giữ Gate 1. Phiếu A: mục A1 câu 1.1, mục A4 câu 1.6 và rà bản tiêu chí trong `config/acceptance_criteria.json`. Phiếu B: B3 (câu 2.3), B7.4 (câu 2.9, mục `business`), các dòng Dữ liệu, Chi phí và Quyết định trong B5, và góp ý quyết định v1 ở B8. Phiếu C thẻ S5: C3.5, C5 câu 3.2, C7 phần cấu hình phạm vi pilot, C8 phần chi phí theo kho và C12 quyết định v2.
 
 ### Đóng góp cụ thể
 
-...
+- **Phiếu A:** Cùng nhóm chọn PRD v1.1 và eval card của Lab 9 làm tài liệu tham chiếu. Viết mục tiêu hoàn đúng chính sách, có phê duyệt khi cần và khớp sổ cái. Soạn và rà các ngưỡng chất lượng, an toàn, chi phí, ROI, hàng đợi và quy tắc quyết định trước khi nhóm chạy đánh giá.
+- **Phiếu B:** Rà bản đồ dữ liệu và làm rõ REFUND-v4 yêu cầu phê duyệt khi vượt hạn mức tự động 100.000đ. Duyệt trần hoàn 1.500.000đ/ngày, ngân sách tiền máy 1.500đ/ticket, phạm vi đo vòng 1 và ROI tối thiểu 0,5. Cùng nhóm thống nhất v1 **Thu hẹp**: chuyển ca không tra được đơn thẳng cho CSKH và chờ bằng chứng từ thẻ trước khi cân nhắc mở pilot.
+- **Phiếu C:** Bổ sung vai trò của mã kho và sổ cái, kể cả khoản CSKH hoàn tay. Viết yêu cầu chỉ hoàn phần quyền lợi còn lại và nêu ca S5-21 có mức kỳ vọng 12.000đ. Soạn ba ô đo chi phí mỗi ticket theo kho. Đề xuất loại HCM-B2B và giữ HN, HCM, DN, CT vì kho sỉ tốn 10.382đ/ticket ở mốc `prepared`, cao hơn mức làm tay 10.000đ. C7 chỉnh sửa bảng báo cáo.
 
 ### Bằng chứng
 
-Mã commit, mã lần chạy (`runs/<mã>`), dòng trong phiếu.
+- **Phiếu A:** commit `48de2ae` cập nhật phiếu và tài liệu Lab 9. Commit ký của nhóm `9f04409`(Phúc commit hộ (Đã hỏi labcoach rằng nếu trong 1 file mà nhiều việc chồng chéo quá thì làm rồi tổng hợp cho 1 người commit được không thì labcoach nói ok)), ghi ở A5.
+- **Phiếu B:** commit `614acc2` làm rõ REFUND-v4 theo góp ý của tôi. Xem B3, B5 dòng 2, 6, 9, B7.4 và B8. Các lần chạy đối chiếu gồm `R-base-after-20261119-152602-8bcbf9` và `R-base-prepared-20261119-154633-c74adf`.
+- **Phiếu C:** commit `40dc8a5` cập nhật C3.5, C5.3.2, C7 và ba ô của C8. Số liệu trước khi sửa ở `R-S5-prepared-20261119-161003-c74adf`.
 
 ### Exit ticket
 
-Một điều học được, một điều còn chưa chắc.
+- **Điều học được:** Chi phí bình quân toàn bộ có thể đạt ngưỡng trong khi một nhóm ticket vẫn đắt hơn làm tay. Khi quyết định phạm vi pilot, tôi cần đọc chi phí theo nhóm cùng với độ phủ và các chỉ số an toàn.
+- **Điều còn chưa chắc:** Khi chạy thật, khoản hoàn tay có xuất hiện trong sổ cái đủ sớm để lần xét hoàn tiếp theo không trả trùng hay không. Tôi muốn đo độ trễ ghi nhận và đối soát số ca hoàn lặp trong pilot.
