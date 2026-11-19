@@ -62,7 +62,8 @@ Commit `a6ec47a` và PR #2. Commit này ghi nhầm MSSV `2A202604000` của Khoa
 
 ### Exit ticket
 
-Chưa cập nhật.
+- **Điều học được:** Khi thiết kế cổng hoàn tiền, cần đối chiếu sổ cái theo đơn và trừ cả các khoản đã hoàn tay; chỉ kiểm tra số tiền đề xuất theo tracking chưa đủ để ngăn hoàn trùng. Phải kiểm tra lại bộ nền sau khi sửa để không làm hỏng ca đúng.
+- **Điều còn chưa chắc:** Trong pilot thật, nếu hai yêu cầu của cùng đơn được xử lý đồng thời hoặc khoản hoàn tay chưa kịp ghi sổ, cổng có còn ngăn được hoàn trùng không; cần kiểm tra tính đầy đủ, độ trễ cập nhật và cơ chế xử lý đồng thời của sổ cái.
 
 ## BuiPhanThanhPhuc-2A202603981
 
