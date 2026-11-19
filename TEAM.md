@@ -81,3 +81,21 @@ Commit `9f04409` (Sign acceptance criteria), `ea80683` (Phiếu A), `1143aa0` (B
 ### Exit ticket
 
 (Phúc tự viết cuối buổi: một điều học được, một điều còn chưa chắc.)
+
+## LeHienHieu - 2@202603940
+
+### Phần việc phụ trách
+
+Vai trong bàn; câu nào của đề, mục nào của phiếu A/B/C, file nào (`lab10/guards.py`, `config/operating_gates.json`, …).
+
+### Đóng góp cụ thể
+
+...
+
+### Bằng chứng
+
+Mã commit, mã lần chạy (`runs/<mã>`), dòng trong phiếu.
+
+### Exit ticket
+
+Một điều học được, một điều còn chưa chắc.

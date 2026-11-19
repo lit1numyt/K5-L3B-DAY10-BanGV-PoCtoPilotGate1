@@ -218,10 +218,10 @@ Cùng cách làm như C3.3. Mốc "tin quá mức" là trước kiểm toán, m�
 
 Mở lại Phiếu B mục B3. Ghi ở đây những dòng đổi so với vòng 1:
 
-| Trường / bảng | Vòng 1 bàn đã coi là (nguồn sự thật / bản sao / chưa hỏi) | Sau khi đọc thẻ thì thấy | Ảnh hưởng tới tiền hay lỗi hãng thế nào |
+| Trường / bảng | Vòng 1 đã coi là | Sau khi đọc S5 thì thấy | Ảnh hưởng tới tiền hay lỗi hãng |
 |---|---|---|---|
-| | | | |
-| | | | |
+| `orders[].warehouse_id` và số liệu xử lý theo kho | `orders` là nguồn dữ liệu đơn hàng. B3 chưa dùng mã kho để đánh giá hiệu quả kinh doanh. | Cần nối mã kho với tiền máy và lượt duyệt. HCM-B2B ở mốc `prepared` có 12 ticket/ngày mô phỏng, chi phí **10.382đ/ticket**. | Chi phí chung có thể che việc một kho vừa tốn tiền máy vừa tốn công CSKH. Dùng số theo kho để quyết định phần nào nên đưa vào pilot. |
+| `ledger_seed` và sổ cái của đơn, gồm dòng `basis: manual` | Sổ cái đã được liệt kê trong B3. B3 chưa coi số tiền đã hoàn là dữ liệu đầu vào để tính khoản còn được hoàn. | Cần đối chiếu các khoản hoàn đã ghi cho cùng đơn, kể cả khoản CSKH hoàn tay, trước khi tính phần còn lại. Ví dụ, `S5-21` chỉ còn được hoàn **12.000đ**. | Bỏ sót lần hoàn trước có thể làm hoàn trùng hoặc hoàn vượt quyền lợi, tăng tiền thất thoát và kéo ROI xuống. |
 
 ---
 
@@ -249,9 +249,9 @@ Bắt buộc: ít nhất ba dòng, trong đó **một dòng là nhánh bàn chư
 
 ### Câu 3.2 · Một specification mà nếu bị vi phạm thì gây ra tác hại trên thẻ
 
-Kiểm được bằng code hoặc bằng một con số trong report: …
+- Yêu cầu: Trước mỗi lệnh issue_refund, hệ thống phải bảo đảm số tiền hoàn mới không vượt phần quyền lợi còn lại của đơn. Phần còn lại bằng quyền lợi theo chính sách và tracking trừ tổng tiền đã hoàn ghi trong sổ cái, kể cả khoản hoàn tay của CSKH, với mức tối thiểu là 0 đồng. Nếu phần còn lại bằng 0 thì không phát sinh khoản hoàn mới.
 
-Kiểm bằng gì (hàm trong `guards.py`, dòng report nào): …
+- Cách kiểm: Đối chiếu nhánh issue_refund trong write_gate với sổ cái và trace. Ca S5-21 phải hoàn đúng 12.000đ còn lại. Kiểm tra thêm wrongful_refund_vnd trong report S5 so với ngưỡng đã ký là 0đ.
 
 ### Câu 3.3 · Một giả định về môi trường mà người thiết kế đã ngầm tin, nhưng nhiều khả năng sai ngoài thực tế
 
@@ -315,9 +315,7 @@ python3 -m lab10.grade --incident Sx
 
 | Nhánh fault tree | Nguyên nhân | Chỗ sửa (hàm + nhánh trong `guards.py`, hoặc khoá trong `operating_gates.json`) | Tầng (phát hiện / chặn / giới hạn thiệt hại / vận hành) | GIẢM khả năng hay NGĂN hẳn? Vì sao | Mã lần chạy sau khi sửa |
 |---|---|---|---|---|---|
-| [1] | | | | | |
-| [2] | | | | | |
-| [3] | | | | | |
+| Kinh doanh — chi phí xử lý tại kho sỉ | HCM-B2B tốn **10.382đ/ticket** ở mốc `prepared`, cao hơn **10.000đ/ticket** nếu làm tay. Nhiều ca vẫn cần CSKH sau khi trợ lý đã đọc. | Đổi `business.pilot_scope` sang danh sách **HN, HCM, DN, CT**. Ticket HCM-B2B đi theo luồng CSKH thủ công. | Vận hành / giới hạn thiệt hại | **Ngăn** ticket được nhận diện thuộc HCM-B2B đi qua trợ lý trong phạm vi đã cấu hình. **Giảm** chi phí trùng ở kho này. Hiệu quả chi phí và độ phủ của phần còn lại cần đo lại. | `[Mã lần chạy chỉ đổi phạm vi]` |
 
 ---
 
@@ -332,9 +330,9 @@ Thẻ S5 dùng mục này cho một con số kinh doanh: chi phí mỗi ticket t
 |---|---|
 | **Tên trong `MONITORS`** | |
 | **Bước / hành vi được đo** | |
-| **Thước đo** (một câu, có đơn vị) | |
-| **Dữ liệu** (trường nào của trial, không có nhãn) | |
-| **Cách tính** (công thức, mẫu số, cách xử lý ca thiếu dữ liệu) | |
+| **Thước đo** |	Chi phí xử lý bình quân của một ticket đi qua trợ lý tại từng kho, đơn vị đồng/ticket. Theo dõi riêng tiền máy, công người duyệt và tiền hoàn sai để thấy nguyên nhân đội chi phí. |
+| **Dữ liệu** | 	Nhóm theo warehouse, dùng ticket_id và seed để đếm lần xử lý, cost_vnd cho tiền máy và review_kind để xác định lượt duyệt hoặc kiểm lại. Lấy đơn giá công duyệt từ ops_facts. Tiền hoàn sai lấy riêng từ kết quả đối soát sổ cái hoặc report đánh giá có nhãn.|
+| **Cách tính** (công thức, mẫu số, cách xử lý ca thiếu dữ liệu) |	Với từng kho, lấy (tổng tiền máy + tổng công duyệt) / số lần xử lý trong cùng kỳ để đối chiếu với cột chi phí theo kho của report. Báo tiền hoàn sai riêng. Ticket thiếu mã kho đưa vào nhóm ?. Kho không có ticket ghi không đủ dữ liệu. Báo động nếu chi phí theo kho vượt 10.000đ/ticket là mức làm tay. |
 | **Khung thời gian / ngưỡng báo động** | |
 | **Điểm mù** (chỉ số này KHÔNG thấy gì) | |
 | Giá trị trên bộ nền · trên thẻ (đọc mục `monitor` của report) | |
