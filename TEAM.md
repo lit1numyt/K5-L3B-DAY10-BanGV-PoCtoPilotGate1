@@ -24,23 +24,27 @@ Ghi `members` trong `submission/submission.json` theo dạng `"HoVaTen-MSSV"`, k
 
 Mỗi thành viên tự viết một mục bên dưới (chép mẫu, đổi tiêu đề thành họ tên không dấu và MSSV, ví dụ `## NguyenVanAn-20241234`).
 
-## HoVaTen-MSSV
+## DongHuuNguyenKhoa-2A202604000
 
 ### Phần việc phụ trách
 
-Vai trong bàn; câu nào của đề, mục nào của phiếu A/B/C, file nào (`lab10/guards.py`, `config/operating_gates.json`, …).
+Trưởng nhóm; vai Vận hành và pháp lý. Phiếu A câu 1.2, 1.4 (mục A1, A2 cột telemetry); Phiếu B câu 2.4 (B4 HAZOP vòng 1 trên `file_carrier_fault`, B5 checklist 9 nhóm việc), câu 2.10 (B7.5 runbook 1–3, B7.6 giờ cao điểm), đề xuất lăng kính con người và pháp lý ở B6; `config/operating_gates.json` mục `operations` và `legal`; Phiếu C mục C4 (HAZOP thẻ S5), C5 câu 3.3, C7 dòng quy trình, C11 (checklist, runbook 4–5); `submission/submission.json`.
 
 ### Đóng góp cụ thể
 
-...
+- Mục tiêu nhìn từ chị Oanh và chị Hạnh, telemetry production cho lỗi ghi oan cho hãng, bám PRD v1.1 và eval card Lab 9.
+- HAZOP vòng 1 tìm ra các nhánh dùng làm cổng vòng 1: ghi lỗi theo kiện đầu tiên, nguyên nhân thiếu bị gán cho hãng, chính sách chọn theo cờ thay vì theo ngày (REFUND-v4), dữ liệu cá nhân gửi hãng.
+- Đặt cổng vận hành và pháp lý: PIC NV-TUNG, người duyệt NV-HANH, 1 người trực × 6 ca/giờ, chờ tối đa 60 phút, điều kiện dừng; chặn `customer_note`, `recipient_contact` gửi hãng; ghi lỗi hãng phải có nguyên nhân trong tracking.
+- Vòng 2 (thẻ S5): HAZOP thẻ, trong đó nhánh chưa thấy trên trace là phê duyệt bị dùng lại cho đơn khác của cùng khách sỉ; giả định môi trường về sổ cái ghi kịp thời; quy trình CSKH ghi sổ trước khi đóng cuộc gọi; runbook 4–5.
+- Dùng trợ lý AI (Claude Code) để đọc code, soát số liệu với report và soạn nháp các mục trên; bàn duyệt và chỉnh lại trước khi đẩy.
 
 ### Bằng chứng
 
-Mã commit, mã lần chạy (`runs/<mã>`), dòng trong phiếu.
+Commit `616493e` (PR #3, Phiếu A), `16895f3` (PR #6, Phiếu B), `c44ac79` (PR #1); lần chạy `R-base-before-20261119-151824-9b7afe`, `R-base-after-20261119-152602-8bcbf9`, `R-S5-prepared-20261119-161003-c74adf`; Phiếu B mục B4, B5, B7.5, B7.6; Phiếu C mục C4, C5 câu 3.3, C7, C11.
 
 ### Exit ticket
 
-Một điều học được, một điều còn chưa chắc.
+Học được: một cổng chỉ "ngăn" được khi giả định môi trường đằng sau nó đúng; cổng trừ phần đã hoàn của thẻ S5 vẫn chỉ "giảm" vì phụ thuộc CSKH ghi sổ đúng lúc. Còn chưa chắc: con số chi phí và hàng chờ trên dữ liệu mock có giữ được khi lượng ticket thật dồn vào ngày sale hay không.
 
 ## ChuNguyenTungDuong-2A202604016
 

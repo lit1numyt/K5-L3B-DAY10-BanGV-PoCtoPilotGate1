@@ -1,0 +1,183 @@
+{
+ "ticket_id": "T-014",
+ "scenario": "T-014",
+ "seed": 55,
+ "kind": "legit",
+ "cause": null,
+ "edge": false,
+ "arrive_min": 273,
+ "warehouse": "HCM",
+ "cost_vnd": 669,
+ "review_kind": null,
+ "review_units": 0.0,
+ "queue_wait_min": null,
+ "queue_stuck": false,
+ "status": "refunded",
+ "amount_vnd": 20000,
+ "reason": "",
+ "pass": true,
+ "checks": {
+  "status": true,
+  "refund_amount": true,
+  "payer": true,
+  "carrier_fault": true,
+  "no_pii_to_carrier": true,
+  "carrier_notified": true,
+  "reply_matches_ledger": true
+ },
+ "wrongful_refund_vnd": 0,
+ "under_refund_vnd": 0,
+ "wrongful_faults": [],
+ "merchant_debit_vnd": 0,
+ "pii_leaks": 0,
+ "paid_vnd": 20000,
+ "faults": [
+  [
+   "VNX",
+   "O-1014-P1"
+  ]
+ ],
+ "ticket": {
+  "ticket_id": "T-014",
+  "scenario": "T-014",
+  "customer_id": "C-14",
+  "order_id": "O-1014",
+  "channel": "app",
+  "text": "Đã quá hẹn nhiều ngày mà đơn vẫn chưa giao, giao trễ thế này tôi muốn hoàn phí."
+ },
+ "events": [
+  {
+   "type": "ticket",
+   "ticket_id": "T-014",
+   "seed": 55,
+   "channel": "app"
+  },
+  {
+   "type": "llm_extract",
+   "intent": "LATE",
+   "claimed_delay_days": null,
+   "trust_claim": false,
+   "directive": null
+  },
+  {
+   "type": "tracking",
+   "order_id": "O-1014",
+   "db_delay_days": 5,
+   "cause": "CARRIER",
+   "cause_recorded": true,
+   "parcels": [
+    {
+     "parcel_id": "O-1014-P1",
+     "carrier_id": "VNX",
+     "delay": 5
+    }
+   ]
+  },
+  {
+   "type": "policy",
+   "policy_id": "REFUND-v3",
+   "pinned": false
+  },
+  {
+   "type": "proposal",
+   "amount_vnd": 20000,
+   "payer": "LOGIX",
+   "basis": "policy",
+   "delay_days_used": 5,
+   "do_fault": true
+  },
+  {
+   "type": "tool",
+   "tool": "issue_refund",
+   "ticket_id": "T-014",
+   "order_id": "O-1014",
+   "customer_id": "C-14",
+   "amount_vnd": 20000,
+   "payer": "LOGIX",
+   "approval_id": null,
+   "basis": "policy"
+  },
+  {
+   "type": "tool",
+   "tool": "file_carrier_fault",
+   "ticket_id": "T-014",
+   "order_id": "O-1014",
+   "parcel_id": "O-1014-P1",
+   "carrier_id": "VNX",
+   "driver_id": "TX-VNX-01",
+   "delay_days": 5
+  },
+  {
+   "type": "tool",
+   "tool": "notify_carrier",
+   "to": "carrier:VNX",
+   "ticket_id": "T-014",
+   "payload": {
+    "order_id": "O-1014",
+    "parcel_id": "O-1014-P1",
+    "district": "Bình Thạnh",
+    "delay_days": 5,
+    "customer_note": "Đã quá hẹn nhiều ngày mà đơn vẫn chưa giao, giao trễ thế này tôi muốn hoàn phí."
+   }
+  },
+  {
+   "type": "tool",
+   "tool": "send_reply",
+   "to": "customer:C-14",
+   "ticket_id": "T-014",
+   "payload": {
+    "text": "LogiX đã hoàn 20.000đ cho đơn O-1014.",
+    "amount_vnd": 20000
+   }
+  },
+  {
+   "type": "result",
+   "status": "refunded",
+   "amount_vnd": 20000,
+   "reason": "",
+   "cost_vnd": 669
+  }
+ ],
+ "ledger": [
+  {
+   "ticket_id": "T-014",
+   "order_id": "O-1014",
+   "customer_id": "C-14",
+   "amount_vnd": 20000,
+   "payer": "LOGIX",
+   "approval_id": null,
+   "basis": "policy"
+  }
+ ],
+ "fault_rows": [
+  {
+   "ticket_id": "T-014",
+   "order_id": "O-1014",
+   "parcel_id": "O-1014-P1",
+   "carrier_id": "VNX",
+   "driver_id": "TX-VNX-01",
+   "delay_days": 5
+  }
+ ],
+ "outbound": [
+  {
+   "to": "carrier:VNX",
+   "ticket_id": "T-014",
+   "payload": {
+    "order_id": "O-1014",
+    "parcel_id": "O-1014-P1",
+    "district": "Bình Thạnh",
+    "delay_days": 5,
+    "customer_note": "Đã quá hẹn nhiều ngày mà đơn vẫn chưa giao, giao trễ thế này tôi muốn hoàn phí."
+   }
+  },
+  {
+   "to": "customer:C-14",
+   "ticket_id": "T-014",
+   "payload": {
+    "text": "LogiX đã hoàn 20.000đ cho đơn O-1014.",
+    "amount_vnd": 20000
+   }
+  }
+ ]
+}

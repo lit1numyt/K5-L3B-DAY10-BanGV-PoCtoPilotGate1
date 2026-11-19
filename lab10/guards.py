@@ -65,6 +65,16 @@ def write_gate(ctx, action):
             return Verdict.escalate("thiếu dữ liệu đơn hoặc chính sách để kiểm số tiền hoàn")
         order, parcel, delay, policy = f
         entitled = H.entitlement_vnd(policy, order, delay, parcel.get("delay_cause"))
+        rows = ctx.tools.ledger_rows(order_id=order["order_id"])
+        if any(r.get("ticket_id") == action.get("ticket_id") for r in rows):
+            ctx.log("refund_retry_blocked", order_id=order["order_id"])
+            return Verdict.deny("ticket đã có khoản hoàn trong sổ cái")
+        paid = sum(r.get("amount_vnd", 0) for r in rows)
+        remaining = max(0, entitled - paid)
+        if paid and remaining == 0:
+            ctx.log("refund_already_settled", order_id=order["order_id"], paid=paid, entitled=entitled)
+            # Nhãn ưu tiên "denied": không hoàn thêm, không tốn công người duyệt; câu trả lời được sửa ở nhánh send_reply.
+            return Verdict.deny("đơn đã được hoàn đủ theo sổ cái")
         if action.get("amount_vnd", 0) > entitled:
             ctx.log("refund_over_entitlement", asked=action.get("amount_vnd"), entitled=entitled, db_delay_days=delay)
             return Verdict.escalate(f"số tiền hoàn vượt quyền lợi theo tracking DB ({entitled}đ): chuyển người duyệt")
@@ -79,6 +89,10 @@ def write_gate(ctx, action):
             ctx.log("carrier_strike_limit", carrier_id=parcel["carrier_id"], limit=limit)
             return Verdict.escalate("hãng đã đủ số lỗi tự động trong ngày: chuyển người duyệt trước khi hoàn")
 
+        if paid and action.get("amount_vnd", 0) > remaining:
+            ctx.log("refund_remainder_adjusted", order_id=order["order_id"], paid=paid, remaining=remaining)
+            return Verdict.modify("chỉ hoàn phần quyền lợi còn lại sau đối chiếu sổ cái", amount_vnd=remaining)
+
     # Cổng 3 (B4 dòng WRONG, INCOMPLETE, INCAPABLE; B6 Pháp lý): chỉ ghi lỗi hãng cho đúng kiện trễ, đúng số ngày
     # theo DB, khi chính sách cho phép; tối đa số lỗi tự động mỗi hãng mỗi ngày theo ops_limits.
     if tool == "file_carrier_fault":
@@ -88,6 +102,9 @@ def write_gate(ctx, action):
         order, parcel, delay, policy = f
         if not H.carrier_at_fault(policy, parcel, delay):
             return Verdict.deny("tracking DB không cho thấy hãng có lỗi theo chính sách")
+        if ctx.tools.fault_rows(order_id=order["order_id"], parcel_id=parcel["parcel_id"]):
+            ctx.log("carrier_fault_duplicate_blocked", order_id=order["order_id"], parcel_id=parcel["parcel_id"])
+            return Verdict.deny("kiện đã có lỗi hãng được ghi")
         limit = ctx.tools.ops_limits().get("max_auto_strikes_per_carrier_per_day")
         if limit is not None and len(ctx.tools.fault_rows(carrier_id=parcel["carrier_id"])) >= limit:
             ctx.log("carrier_strike_limit", carrier_id=parcel["carrier_id"], limit=limit)
@@ -101,6 +118,16 @@ def write_gate(ctx, action):
             return Verdict.modify("ghi lỗi theo kiện trễ và số ngày trong tracking DB", **fix)
 
     # Cổng 3 (tiếp, B4 dòng Dữ liệu gửi bên thứ ba): chỉ gửi hãng các trường chính sách cho phép.
+    # Vòng 2 (S5): khoản hoàn bị chặn vì đơn đã được hoàn trước đó thì câu trả lời phải khớp sổ cái,
+    # không được nói "LogiX chưa hoàn khoản nào".
+    if tool == "send_reply":
+        settled = any(e.get("type") == "guard" and e.get("kind") in ("refund_already_settled", "refund_retry_blocked")
+                      for e in ctx.events)
+        if settled and not action.get("amount_vnd"):
+            return Verdict.modify("trả lời theo sổ cái: đơn đã được hoàn trước đó",
+                                  text="Đơn này đã được LogiX hoàn tiền trước đó theo sổ cái, nên lần này không hoàn thêm. "
+                                       "Nếu cần đối chiếu, CSKH sẽ liên hệ lại.")
+
     if tool == "notify_carrier":
         policy = H.effective_policy(ctx.tools.lookup_policies(), ctx.as_of)
         allowed = set((policy or {}).get("carrier_notice_fields") or [])

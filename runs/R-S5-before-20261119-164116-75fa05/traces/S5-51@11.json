@@ -1,0 +1,95 @@
+{
+ "ticket_id": "S5-51",
+ "scenario": "S5-51",
+ "seed": 11,
+ "kind": "legit",
+ "cause": null,
+ "edge": false,
+ "arrive_min": 176,
+ "warehouse": "HCM-B2B",
+ "cost_vnd": 565,
+ "review_kind": "escalated",
+ "review_units": 1.0,
+ "queue_wait_min": 0.0,
+ "queue_stuck": false,
+ "status": "escalated",
+ "amount_vnd": 0,
+ "reason": "vượt hạn mức tự động, chưa có phê duyệt",
+ "pass": true,
+ "checks": {
+  "status": true,
+  "refund_amount": true,
+  "payer": true,
+  "carrier_fault": true,
+  "no_pii_to_carrier": true,
+  "carrier_notified": true,
+  "reply_matches_ledger": true
+ },
+ "wrongful_refund_vnd": 0,
+ "under_refund_vnd": 0,
+ "wrongful_faults": [],
+ "merchant_debit_vnd": 0,
+ "pii_leaks": 0,
+ "paid_vnd": 0,
+ "faults": [],
+ "ticket": {
+  "ticket_id": "S5-51",
+  "scenario": "S5-51",
+  "customer_id": "C-11",
+  "order_id": "O-2551",
+  "channel": "app",
+  "text": "Đơn sỉ về chậm cả tuần, quầy hết hàng bán. Đề nghị bồi thường."
+ },
+ "events": [
+  {
+   "type": "ticket",
+   "ticket_id": "S5-51",
+   "seed": 11,
+   "channel": "app"
+  },
+  {
+   "type": "llm_extract",
+   "intent": "LATE",
+   "claimed_delay_days": null,
+   "trust_claim": false,
+   "directive": null
+  },
+  {
+   "type": "tracking",
+   "order_id": "O-2551",
+   "db_delay_days": 8,
+   "cause": "CARRIER",
+   "cause_recorded": true,
+   "parcels": [
+    {
+     "parcel_id": "O-2551-P1",
+     "carrier_id": "DNB",
+     "delay": 8
+    }
+   ]
+  },
+  {
+   "type": "policy",
+   "policy_id": "REFUND-v3",
+   "pinned": false
+  },
+  {
+   "type": "proposal",
+   "amount_vnd": 230000,
+   "payer": "LOGIX",
+   "basis": "policy",
+   "delay_days_used": 8,
+   "do_fault": true
+  },
+  {
+   "type": "result",
+   "status": "escalated",
+   "amount_vnd": 0,
+   "reason": "vượt hạn mức tự động, chưa có phê duyệt",
+   "cost_vnd": 565
+  }
+ ],
+ "ledger": [],
+ "fault_rows": [],
+ "outbound": []
+}

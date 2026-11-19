@@ -19,7 +19,41 @@ def escalation_rate(trials):
     return sum(t["status"] == "escalated" for t in trials) / max(1, len(trials))
 
 
+def ledger_review_signals(trials):
+    """Số lượt cổng phát hiện đã hoàn đủ, hoàn một phần hoặc thử ghi lặp."""
+    kinds = {"refund_already_settled", "refund_remainder_adjusted", "refund_retry_blocked"}
+    return sum(1 for trial in trials if any(
+        event.get("type") == "guard" and event.get("kind") in kinds
+        for event in trial.get("events", [])
+    ))
+
+
+def _review_cost_vnd():
+    """Công người một ca chuyển duyệt, đọc từ data/world.json → ops_facts (nguồn số liệu chung, không gõ tay)."""
+    import json
+    from pathlib import Path
+    try:
+        facts = json.loads((Path(__file__).resolve().parent.parent / "data" / "world.json").read_text(encoding="utf-8"))["ops_facts"]
+        return facts.get("review_cost_per_ticket_vnd", 10000), facts.get("recheck_with_note_units", 0.4)
+    except Exception:
+        return 10000, 0.4
+
+
+def max_warehouse_cost_per_ticket(trials):
+    """Chi phí xử lý bình quân mỗi ticket (tiền máy + công người duyệt) của KHO ĐẮT NHẤT, đồng/ticket.
+    Ngưỡng: > 6.000đ (cost_per_ticket_vnd_max đã ký) là vàng; > 10.000đ (làm tay) là đỏ → thu hẹp kho đó."""
+    review, recheck_units = _review_cost_vnd()
+    by_wh = {}
+    for t in trials:
+        human = review if t.get("review_kind") == "escalated" else review * recheck_units if t.get("review_kind") == "recheck" else 0
+        tot, n = by_wh.get(t.get("warehouse") or "?", (0, 0))
+        by_wh[t.get("warehouse") or "?"] = (tot + (t.get("cost_vnd") or 0) + human, n + 1)
+    return max((tot / n for tot, n in by_wh.values()), default=0.0)
+
+
 MONITORS = {
     "escalation_rate": escalation_rate,     # có sẵn; KHÔNG tính là metric mới của đội
+    "ledger_review_signals": ledger_review_signals,
+    "max_warehouse_cost_per_ticket": max_warehouse_cost_per_ticket,
 }
 STARTER_MONITORS = ("escalation_rate",)

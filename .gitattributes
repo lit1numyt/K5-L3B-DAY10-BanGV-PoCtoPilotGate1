@@ -1,0 +1,3 @@
+# Giữ nguyên byte (không đổi CRLF/LF) cho bài nộp và nhật ký lần chạy: submission/manifest.json lưu hash theo byte.
+submission/** -text
+runs/** -text
