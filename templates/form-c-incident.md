@@ -78,33 +78,33 @@ python3 -m lab10.trace --suite Sx --ticket <ID> --seed 11
 Ba loại lỗi: **giới hạn của hệ thống** · **lỗi ngữ cảnh** · **lỗi chìm** (cả người dùng lẫn hệ thống đều không nhận ra; nguy hiểm nhất,
 người chịu hại thường là bên thứ ba). Định nghĩa đầy đủ và ví dụ: Phiếu B mục B2.
 
-**Tác hại của thẻ:** cho ai `____` · đo bằng gì `____` · bao nhiêu ở mốc base `____`
+**Tác hại của thẻ:** cho ai `LogiX (Finance, CFO; chị Oanh đối soát) và hãng bị ghi lỗi lặp (GHSH, VNX)` · đo bằng gì `ROI, tiết kiệm ròng mỗi ngày, tiền hoàn sai, chi phí mỗi ticket theo kho` · bao nhiêu ở mốc base `ROI −0,33; tiết kiệm ròng −60.486đ/ngày; hoàn sai 890.000đ và 20 lỗi oan (tổng 150 lượt chạy); HCM-B2B đắt hơn làm tay (R-S5-before-20261119-161003-c74adf)`
 
 ### Phần 1 · Ghi lỗi (bằng chứng là mã ticket@seed và dòng trace, không tả chung chung)
 
 | # | Lỗi: người ta thấy gì (dán dòng trace / sổ cái) | Ai gặp, ai chịu | Hệ trọng (thấp / cao) | Loại lỗi (giới hạn hệ thống / ngữ cảnh / chìm) |
 |---|---|---|---|---|
-| 1 | | | | |
-| 2 | | | | |
-| 3 | | | | |
+| 1 | **Hoàn lặp khi khách nhắn lại cùng đơn.** `S5-01@11` (phút 0): SỔ CÁI `S5-01 · O-2501 · 25000 · policy`, LỖI HÃNG `GHSH, O-2501-P1`. `S5-02@11` (phút 16, "Em nhắn lại lần nữa…"): SỔ CÁI thêm `S5-02 · O-2501 · 25000 · policy`, LỖI HÃNG thêm `GHSH, O-2501-P1`; trả lời khách "LogiX đã hoàn 25.000đ" lần hai. Cùng kiểu: `S5-04` → `S5-05@11` (O-2502, 2 × 98.000đ) | Khách không thấy gì sai (được hoàn thêm); LogiX mất 25.000đ / 98.000đ; GHSH bị ghi lỗi hai lần cho một kiện; chị Oanh lệch sổ | Cao | **Lỗi chìm** |
+| 2 | **CSKH đã hoàn tay, trợ lý hoàn nữa.** `ledger_seed`: `T-CSKH-2520 · O-2520 · 20000 · manual`; `S5-20@11` ("Hôm qua tôi gọi tổng đài…") vẫn ghi SỔ CÁI `S5-20 · O-2520 · 20000 · policy` + LỖI HÃNG `VNX, O-2520-P1`. `T-CSKH-2521 · O-2521 · 10000 · manual`; `S5-21@11` ghi `22000` trong khi chỉ còn được 12.000đ (hoàn quá 10.000đ) | Khách không thấy sai; LogiX mất 20.000đ + 10.000đ; VNX bị ghi lỗi lặp; CSKH và chị Oanh không biết đơn đã bị hoàn hai nguồn | Cao | **Lỗi chìm** |
+| 3 | **Kho sỉ: đọc xong vẫn phải chuyển người.** `S5-51@11`: `proposal amount_vnd 230000` > `auto_limit_vnd` 200.000đ, không có phê duyệt → `result escalated` "vượt hạn mức tự động, chưa có phê duyệt", `cost_vnd 565`. Report prepared: kho HCM-B2B 12 ticket/ngày, `review_rate 1.0`, 10.382đ/ticket > 10.000đ làm tay | CFO thấy rõ trên bảng chi phí (không phải lỗi chìm); LogiX trả cả tiền máy lẫn công người; cửa hàng sỉ vẫn phải chờ người | Cao về tiền (cả nhóm kho), thấp về an toàn (ca này đạt nhãn) | **Giới hạn của hệ thống** |
 
 ### Phần 2 · Tìm nguồn (đánh dấu câu nào đúng với từng lỗi)
 
 | Câu hỏi | Lỗi 1 | Lỗi 2 | Lỗi 3 |
 |---|---|---|---|
-| **Đầu vào:** hệ thống có tự diễn giải / sửa đầu vào của người dùng theo cách họ không lường? Có đặt sai trọng số cho một lời nói hay tín hiệu của người dùng? | | | |
-| **Độ liên quan:** hệ thống có thiếu dữ liệu cần để quyết đúng? Dữ liệu vào có nhiễu, thiếu ổn định? | | | |
-| **Thứ bậc hệ thống:** có hai hệ thống cùng ghi / cùng theo dõi một thứ mà không rõ bên nào là chủ (ví dụ CSKH hoàn tay và trợ lý cùng ghi sổ)? | | | |
-| **Trạng thái hỏng:** nhiều lỗi cộng lại có làm tính năng không dùng được (ví dụ LLM lỗi liên tiếp)? | | | |
+| **Đầu vào:** hệ thống có tự diễn giải / sửa đầu vào của người dùng theo cách họ không lường? Có đặt sai trọng số cho một lời nói hay tín hiệu của người dùng? | ✔ Một phần: tin nhắn gửi lặp (HAZOP PERTURBED) bị coi là một yêu cầu mới | ✘ Không | ✘ Không |
+| **Độ liên quan:** hệ thống có thiếu dữ liệu cần để quyết đúng? Dữ liệu vào có nhiễu, thiếu ổn định? | ✔ **Đúng (nguồn chính):** sổ cái có sẵn (`ctx.tools.ledger_rows(order_id=…)`) nhưng trợ lý và cổng vòng 1 không đọc trước khi hoàn | ✔ Một phần: dòng `manual` có trong sổ cái nhưng không được trừ khỏi quyền lợi | ✔ Một phần: không có phê duyệt sẵn cho khoản > 200.000đ, nên trợ lý không đủ quyền để kết thúc ca |
+| **Thứ bậc hệ thống:** có hai hệ thống cùng ghi / cùng theo dõi một thứ mà không rõ bên nào là chủ (ví dụ CSKH hoàn tay và trợ lý cùng ghi sổ)? | ✘ Không (chỉ trợ lý ghi) | ✔ **Đúng (nguồn chính):** CSKH hoàn tay qua tổng đài và trợ lý cùng ghi một sổ cái, không ai là chủ của "đơn này đã hoàn bao nhiêu" | ✘ Không |
+| **Trạng thái hỏng:** nhiều lỗi cộng lại có làm tính năng không dùng được (ví dụ LLM lỗi liên tiếp)? | ✘ Không | ✘ Không | ✔ **Đúng (nguồn chính) ở cấp kinh doanh:** cả nhóm kho sỉ luôn rơi vào chuyển người, cộng tiền máy, làm tự động hoá ở kho này lỗ dù model không sai |
 
 ### Phần 3 · Hướng xử lý (mỗi lỗi một ô)
 
 | | Lỗi 1 | Lỗi 2 | Lỗi 3 |
 |---|---|---|---|
-| Vì sao người gặp coi đây là lỗi | | | |
-| Kiểu giải pháp: phản hồi cho người dùng / trao quyền kiểm soát cho người / khác | | | |
-| Đường đi của người sau khi có giải pháp (ví dụ: ticket chuyển sang người duyệt → duyệt → khách được trả lời) | | | |
-| Hệ thống học được gì (tín hiệu ghi lại để theo dõi: tên metric trong `monitors.py`) | | | |
+| Vì sao người gặp coi đây là lỗi | Chị Oanh: một đơn có hai dòng hoàn cho cùng một lần trễ; GHSH: bị phạt hai lần cho một kiện | CSKH / chị Oanh: đơn đã xử lý qua tổng đài mà sổ cái lại có khoản hoàn thứ hai | CFO: mỗi ticket kho sỉ trả cả tiền trợ lý lẫn công người, đắt hơn làm tay như cũ |
+| Kiểu giải pháp: phản hồi cho người dùng / trao quyền kiểm soát cho người / khác | Khác (chặn bằng code, `guards.py`): quyền lợi **trừ tổng đã hoàn** cho đơn; hết thì không hoàn và trả lời khách "đơn đã được hoàn"; không ghi lỗi hãng lần 2 cho cùng kiện | Khác (code, như lỗi 1, đọc cả dòng `manual`) + quy trình: CSKH hoàn tay phải ghi cùng sổ cái trước khi đóng cuộc gọi | Trao quyền cho người (đổi phạm vi, `config/operating_gates.json`): kho sỉ đi thẳng tới người duyệt, không qua trợ lý (`business.pilot_scope` chỉ HN, HCM, DN, CT) |
+| Đường đi của người sau khi có giải pháp (ví dụ: ticket chuyển sang người duyệt → duyệt → khách được trả lời) | Khách nhắn lại → trợ lý thấy đơn đã hoàn đủ → trả lời "LogiX đã hoàn 25.000đ cho đơn này ngày …", không ghi tiền, không ghi lỗi hãng | Khách nhắn sau cuộc gọi → trợ lý thấy dòng `manual` → hoàn phần còn lại (`S5-21`: 12.000đ) hoặc không hoàn nếu đã đủ (`S5-20`) → trả lời khớp sổ cái | Ticket kho sỉ → hàng chờ NV-HANH ngay (không tốn tiền LLM) → duyệt khoản > 200.000đ → khách sỉ được trả lời |
+| Hệ thống học được gì (tín hiệu ghi lại để theo dõi: tên metric trong `monitors.py`) | Số đơn có ≥ 2 dòng hoàn trong ngày (metric mới của Dương, Phiếu C mục C8) | Cùng metric trên, tách theo `basis` (`manual` + `policy` trên cùng đơn) | Chi phí mỗi ticket theo kho và tỉ lệ chuyển người theo kho (khối "theo kho" của report; bảng 3 ô của Hiếu ở C8) |
 
 Yêu cầu: ít nhất **hai lỗi có nguồn khác nhau** ở phần 2, và ít nhất một lỗi được xếp đúng là **lỗi chìm**.
 
