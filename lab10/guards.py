@@ -69,6 +69,16 @@ def write_gate(ctx, action):
             ctx.log("refund_over_entitlement", asked=action.get("amount_vnd"), entitled=entitled, db_delay_days=delay)
             return Verdict.escalate(f"số tiền hoàn vượt quyền lợi theo tracking DB ({entitled}đ): chuyển người duyệt")
 
+        # Nếu sắp ghi lỗi hãng thứ ba, chuyển người trước khi ghi tiền để tránh ticket đã hoàn nhưng lại chờ duyệt.
+        proposal = next((e for e in reversed(ctx.events) if e.get("type") == "proposal"), {})
+        limit = ctx.tools.ops_limits().get("max_auto_strikes_per_carrier_per_day")
+        already_paid = ctx.tools.ledger_rows(ticket_id=action.get("ticket_id"))
+        if (proposal.get("do_fault") and H.carrier_at_fault(policy, parcel, delay)
+                and limit is not None and not already_paid
+                and len(ctx.tools.fault_rows(carrier_id=parcel["carrier_id"])) >= limit):
+            ctx.log("carrier_strike_limit", carrier_id=parcel["carrier_id"], limit=limit)
+            return Verdict.escalate("hãng đã đủ số lỗi tự động trong ngày: chuyển người duyệt trước khi hoàn")
+
     # Cổng 3 (B4 dòng WRONG, INCOMPLETE, INCAPABLE; B6 Pháp lý): chỉ ghi lỗi hãng cho đúng kiện trễ, đúng số ngày
     # theo DB, khi chính sách cho phép; tối đa số lỗi tự động mỗi hãng mỗi ngày theo ops_limits.
     if tool == "file_carrier_fault":
