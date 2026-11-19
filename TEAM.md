@@ -50,15 +50,23 @@ Học được: một cổng chỉ "ngăn" được khi giả định môi trư�
 
 ### Phần việc phụ trách
 
-Kỹ sư cổng; phụ trách câu 1.3, Phiếu A mục A2.
+Kỹ sư cổng: Phiếu A câu 1.3 (mục A2); chạy đánh giá nền và dò `T-002@55` cho Phiếu B mục B0–B2; rà cổng vòng 1 và bổ sung kiểm tra trước khi hoàn; phân tích trace S5, sửa `lab10/guards.py`, thêm chỉ số trong `lab10/monitors.py`, ghi phần kỹ thuật Phiếu C mục C7–C8 và bàn giao kết quả cho nhóm.
 
 ### Đóng góp cụ thể
 
-Đề xuất thước đo offline cho bước chọn độ trễ, dựa trên PRD và eval card Lab 9; sử dụng trợ lý AI để hỗ trợ soạn và cập nhật nội dung sau khi duyệt.
+- **Phiếu A:** đối chiếu PRD v1.1 và eval card Lab 9; đề xuất thước đo offline ở bước chọn chính sách theo ngày hiệu lực, nêu nguồn dữ liệu, công thức, ca thiếu dữ liệu và điểm mù. Phối hợp rà cột telemetry câu 1.4 và gộp bảng A2.
+- **Vòng 1:** chạy đánh giá `base`, đối chiếu với tiêu chí đã ký và dò `T-002@55`; bàn giao bằng chứng trợ lý dùng số ngày khách khai thay tracking, hoàn sai 20.000đ và ghi oan một lỗi hãng. Rà bản cổng của Phúc và bổ sung kiểm tra trần lỗi hãng trước lệnh hoàn, chuyển người duyệt khi hãng đã đủ 2 lỗi để tránh ghi tiền trước khi chuyển ca; chạy thử và kiểm bộ nền.
+- **Phân tích thẻ S5:** đọc report mốc `prepared`, đối chiếu trace của cả kịch bản và `ledger_seed`; tổng hợp cho Phúc các ca khách nhắn lại (`S5-01` → `S5-02`), hoàn tay trước đó (`S5-20`, `S5-21`), ticket dài (`S5-50`, `S5-70`) và chi phí kho sỉ (`S5-51`). Phân biệt tổng trên 5 seed với số tiền mỗi ngày giả lập.
+- **Cổng vòng 2:** bổ sung đối chiếu quyền lợi với các dòng sổ cái theo đơn, gồm khoản hoàn thủ công; chặn lần ghi lặp cùng ticket, chuyển duyệt khi đã hoàn đủ và giới hạn số tiền còn lại khi đã hoàn một phần. Bổ sung kiểm tra lỗi hãng đã ghi cho cùng kiện; chạy thử các ca hoàn trùng, hoàn tay và `S5-21` còn 12.000đ, sau đó chạy lại 13 test công khai, bộ nền và grade S5.
+- **Theo dõi và bàn giao:** thêm `ledger_review_signals` để đếm lượt có tín hiệu cổng đối chiếu sổ cái; điền bằng chứng kỹ thuật vào Phiếu C C7–C8 và chia sẻ report, trace, nhật ký cho Phúc. Thông báo nhóm khi bản sửa code còn ROI và chi phí chưa đạt trước khi nhóm thay đổi phạm vi. Bản cuối được Phúc tiếp tục hoàn thiện và đánh giá lại.
+- **Sử dụng AI:** dùng Codex để hỗ trợ đọc code và dữ liệu, phân tích trace, soạn/sửa cổng và monitor, chạy kiểm tra, cập nhật phiếu và thực hiện Git theo yêu cầu; đối chiếu kết quả và trao đổi với nhóm trước khi chốt.
 
 ### Bằng chứng
 
-Commit `a6ec47a` và PR #2. Commit này ghi nhầm MSSV `2A202604000` của Khoa ở thông tin tác giả và người commit do trợ lý AI cấu hình sai; phần câu 1.3 do Chu Nguyễn Tùng Dương (2A202604016) phụ trách.
+- **Phiếu A:** câu 1.3 mục A2; commit `bfcff57`, `6f9ac59` (sửa và khôi phục nội dung A2).
+- **Vòng 1:** commit `f16173a` (bàn giao report/trace), `b165d2e` (kiểm trần lỗi hãng trước khi hoàn); lần chạy `R-base-before-20261119-151824-9b7afe`, `R-base-after-20261119-154252-e6fc7f`; Phiếu B B0–B2, B7.1 và Phiếu C C1.
+- **Vòng 2:** commit `8ccf0fb` (cổng sổ cái, monitor, C7–C8), `61028e4` (chia sẻ report S5); lần chạy `R-S5-after-20261119-163550-b04771`, `R-base-after-20261119-163625-75fa05`, `R-S5-grade-20261119-163704-75fa05`; report cuối của nhóm `R-S5-grade-20261119-165126-c0aedd`.
+- **Danh tính commit cũ:** commit `a6ec47a` của PR #2 ghi nhầm MSSV `2A202604000` của Khoa ở thông tin tác giả do trợ lý AI cấu hình sai; phần câu 1.3 do Chu Nguyễn Tùng Dương phụ trách.
 
 ### Exit ticket
 
