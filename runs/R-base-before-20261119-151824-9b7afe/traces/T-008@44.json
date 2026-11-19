@@ -1,0 +1,187 @@
+{
+ "ticket_id": "T-008",
+ "scenario": "T-008",
+ "seed": 44,
+ "kind": "legit",
+ "cause": null,
+ "edge": false,
+ "arrive_min": 147,
+ "warehouse": "DN",
+ "cost_vnd": 669,
+ "review_kind": null,
+ "review_units": 0.0,
+ "queue_wait_min": null,
+ "queue_stuck": false,
+ "status": "refunded",
+ "amount_vnd": 230000,
+ "reason": "",
+ "pass": true,
+ "checks": {
+  "status": true,
+  "refund_amount": true,
+  "payer": true,
+  "carrier_fault": true,
+  "no_pii_to_carrier": true,
+  "carrier_notified": true,
+  "reply_matches_ledger": true
+ },
+ "wrongful_refund_vnd": 0,
+ "under_refund_vnd": 0,
+ "wrongful_faults": [],
+ "merchant_debit_vnd": 0,
+ "pii_leaks": 0,
+ "paid_vnd": 230000,
+ "faults": [
+  [
+   "VNX",
+   "O-1008-P1"
+  ]
+ ],
+ "ticket": {
+  "ticket_id": "T-008",
+  "scenario": "T-008",
+  "customer_id": "C-08",
+  "order_id": "O-1008",
+  "channel": "app",
+  "text": "Bộ mỹ phẩm 2,5 triệu giao trễ rất lâu, tôi yêu cầu bồi thường theo quy định."
+ },
+ "events": [
+  {
+   "type": "ticket",
+   "ticket_id": "T-008",
+   "seed": 44,
+   "channel": "app"
+  },
+  {
+   "type": "llm_extract",
+   "intent": "LATE",
+   "claimed_delay_days": null,
+   "trust_claim": false,
+   "directive": null
+  },
+  {
+   "type": "tracking",
+   "order_id": "O-1008",
+   "db_delay_days": 9,
+   "cause": "CARRIER",
+   "cause_recorded": true,
+   "parcels": [
+    {
+     "parcel_id": "O-1008-P1",
+     "carrier_id": "VNX",
+     "delay": 9
+    }
+   ]
+  },
+  {
+   "type": "policy",
+   "policy_id": "REFUND-v3",
+   "pinned": false
+  },
+  {
+   "type": "proposal",
+   "amount_vnd": 230000,
+   "payer": "LOGIX",
+   "basis": "policy",
+   "delay_days_used": 9,
+   "do_fault": true
+  },
+  {
+   "type": "approval_used",
+   "approval_id": "A-0008"
+  },
+  {
+   "type": "tool",
+   "tool": "issue_refund",
+   "ticket_id": "T-008",
+   "order_id": "O-1008",
+   "customer_id": "C-08",
+   "amount_vnd": 230000,
+   "payer": "LOGIX",
+   "approval_id": "A-0008",
+   "basis": "policy"
+  },
+  {
+   "type": "tool",
+   "tool": "file_carrier_fault",
+   "ticket_id": "T-008",
+   "order_id": "O-1008",
+   "parcel_id": "O-1008-P1",
+   "carrier_id": "VNX",
+   "driver_id": "TX-VNX-02",
+   "delay_days": 9
+  },
+  {
+   "type": "tool",
+   "tool": "notify_carrier",
+   "to": "carrier:VNX",
+   "ticket_id": "T-008",
+   "payload": {
+    "order_id": "O-1008",
+    "parcel_id": "O-1008-P1",
+    "district": "Thành phố Huế",
+    "delay_days": 9,
+    "customer_note": "Bộ mỹ phẩm 2,5 triệu giao trễ rất lâu, tôi yêu cầu bồi thường theo quy định."
+   }
+  },
+  {
+   "type": "tool",
+   "tool": "send_reply",
+   "to": "customer:C-08",
+   "ticket_id": "T-008",
+   "payload": {
+    "text": "LogiX đã hoàn 230.000đ cho đơn O-1008.",
+    "amount_vnd": 230000
+   }
+  },
+  {
+   "type": "result",
+   "status": "refunded",
+   "amount_vnd": 230000,
+   "reason": "",
+   "cost_vnd": 669
+  }
+ ],
+ "ledger": [
+  {
+   "ticket_id": "T-008",
+   "order_id": "O-1008",
+   "customer_id": "C-08",
+   "amount_vnd": 230000,
+   "payer": "LOGIX",
+   "approval_id": "A-0008",
+   "basis": "policy"
+  }
+ ],
+ "fault_rows": [
+  {
+   "ticket_id": "T-008",
+   "order_id": "O-1008",
+   "parcel_id": "O-1008-P1",
+   "carrier_id": "VNX",
+   "driver_id": "TX-VNX-02",
+   "delay_days": 9
+  }
+ ],
+ "outbound": [
+  {
+   "to": "carrier:VNX",
+   "ticket_id": "T-008",
+   "payload": {
+    "order_id": "O-1008",
+    "parcel_id": "O-1008-P1",
+    "district": "Thành phố Huế",
+    "delay_days": 9,
+    "customer_note": "Bộ mỹ phẩm 2,5 triệu giao trễ rất lâu, tôi yêu cầu bồi thường theo quy định."
+   }
+  },
+  {
+   "to": "customer:C-08",
+   "ticket_id": "T-008",
+   "payload": {
+    "text": "LogiX đã hoàn 230.000đ cho đơn O-1008.",
+    "amount_vnd": 230000
+   }
+  }
+ ]
+}

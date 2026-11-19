@@ -19,7 +19,17 @@ def escalation_rate(trials):
     return sum(t["status"] == "escalated" for t in trials) / max(1, len(trials))
 
 
+def ledger_review_signals(trials):
+    """Số lượt cổng phát hiện đã hoàn đủ, hoàn một phần hoặc thử ghi lặp."""
+    kinds = {"refund_already_settled", "refund_remainder_adjusted", "refund_retry_blocked"}
+    return sum(1 for trial in trials if any(
+        event.get("type") == "guard" and event.get("kind") in kinds
+        for event in trial.get("events", [])
+    ))
+
+
 MONITORS = {
     "escalation_rate": escalation_rate,     # có sẵn; KHÔNG tính là metric mới của đội
+    "ledger_review_signals": ledger_review_signals,
 }
 STARTER_MONITORS = ("escalation_rate",)
