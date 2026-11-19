@@ -41,3 +41,21 @@ Mã commit, mã lần chạy (`runs/<mã>`), dòng trong phiếu.
 ### Exit ticket
 
 Một điều học được, một điều còn chưa chắc.
+
+## ChuNguyenTungDuong-2A202604016
+
+### Phần việc phụ trách
+
+Kỹ sư cổng; phụ trách câu 1.3, Phiếu A mục A2.
+
+### Đóng góp cụ thể
+
+Đề xuất thước đo offline cho bước chọn độ trễ, dựa trên PRD và eval card Lab 9; sử dụng trợ lý AI để hỗ trợ soạn và cập nhật nội dung sau khi duyệt.
+
+### Bằng chứng
+
+Commit `a6ec47a` và PR #2. Commit này ghi nhầm MSSV `2A202604000` của Khoa ở thông tin tác giả và người commit do trợ lý AI cấu hình sai; phần câu 1.3 do Chu Nguyễn Tùng Dương (2A202604016) phụ trách.
+
+### Exit ticket
+
+Chưa cập nhật.
