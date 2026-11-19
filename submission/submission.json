@@ -12,6 +12,6 @@
   "three_lines": {
     "environment_assumption": "Thiết kế dựa vào giả định sổ cái là đầy đủ và cập nhật ngay: mọi khoản hoàn (trợ lý và CSKH qua tổng đài) đều được ghi vào sổ cái trước khi trợ lý xử lý ticket tiếp theo của cùng đơn; ngoài thực tế CSKH có thể ghi sổ trễ hoặc hai ticket cùng đơn tới đồng thời.",
     "reduce_or_prevent": "Cổng sổ cái NGĂN được hoàn trùng và lỗi hãng lặp với mọi khoản đã nằm trong sổ cái lúc kiểm tra (cổng đọc sổ cái và tracking, không đọc chữ khách), và phạm vi pilot NGĂN kho sỉ đi qua trợ lý; nhưng với khoản CSKH chưa kịp ghi sổ thì chỉ GIẢM khả năng, nhờ quy trình ghi sổ trước khi đóng cuộc gọi và đối soát hằng ngày.",
-    "measure_in_pilot": "Đo lại trong pilot thật trước Bước đánh giá 2: tỉ lệ đơn có từ 2 dòng hoàn (ledger_review_signals) và độ trễ ghi sổ của CSKH; chi phí mỗi ticket theo kho (max_warehouse_cost_per_ticket) với lượng ticket và độ dài tin nhắn thật; tỉ lệ chuyển người và công duyệt thật của NV-HANH; và đo lại sau 01/12/2026 khi REFUND-v4 hạ hạn mức tự động xuống 100.000đ."
+    "measure_in_pilot": "Đo lại trong pilot thật trước Bước đánh giá 2: số lượt cổng phải đối chiếu sổ cái mỗi ngày (ledger_review_signals: đơn đã hoàn đủ, hoàn một phần, ghi lặp), số đơn thật có từ 2 dòng hoàn khi đối soát, và độ trễ ghi sổ của CSKH; chi phí mỗi ticket theo kho (max_warehouse_cost_per_ticket) với lượng ticket và độ dài tin nhắn thật; tỉ lệ chuyển người và công duyệt thật của NV-HANH; và đo lại sau 01/12/2026 khi REFUND-v4 hạ hạn mức tự động xuống 100.000đ."
   }
 }
