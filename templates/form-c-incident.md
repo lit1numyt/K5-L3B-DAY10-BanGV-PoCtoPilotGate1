@@ -233,13 +233,14 @@ Mở lại Phiếu B mục B3. Ghi ở đây những dòng đổi so với vòng
 
 *Mục riêng, không ghi đè HAZOP vòng 1 ở Phiếu B mục B4. Năm guideword và nghĩa của chúng: xem Phiếu B mục B4.*
 
-Tool chọn phân tích: `________________`
+Tool chọn phân tích: `issue_refund` (lệnh ghi làm mất tiền thật trên thẻ S5; dòng 1–2 kéo theo `file_carrier_fault` ghi lỗi lặp cho hãng)
 
 | Tham số / dòng dữ liệu | Guideword (WRONG / INVALID / INCOMPLETE / PERTURBED / INCAPABLE) | Lệch cụ thể (mã ticket, trường dữ liệu của thẻ) | Hậu quả, cho ai | Hiện có gì ngăn? | Gate đề xuất + tầng |
 |---|---|---|---|---|---|
-| | | | | | |
-| | | | | | |
-| | | | | | |
+| `order_id` → tổng đã hoàn cho đơn | PERTURBED | Khách gửi lặp cùng một yêu cầu qua **kênh khác nhau**: `S5-01` (app) → `S5-02` (zalo, phút 16, "Em nhắn lại lần nữa") → `S5-03` (email) cho O-2501; `S5-04` (app) → `S5-05` (email, "Tôi chưa thấy phản hồi, gửi lại") cho O-2502. Trợ lý coi mỗi tin là yêu cầu mới; cờ `refund_status` của đơn chỉ được batch đêm cập nhật (`lab10/agent.py`), nên trong ngày vẫn là `NONE` | LogiX mất 25.000đ / 98.000đ cho mỗi lần lặp; GHSH, VNX bị ghi lỗi lặp cho cùng một kiện; chị Oanh lệch sổ (lỗi chìm, C2 lỗi 1) | Không. Cổng 2 vòng 1 chỉ so số tiền với quyền lợi theo DB, không trừ phần đã hoàn; cờ `REFUNDED` cũ tới hết ngày | `write_gate` nhánh `issue_refund`: quyền lợi còn lại = quyền lợi theo DB − tổng `ctx.tools.ledger_rows(order_id=…)`; bằng 0 thì `deny`, còn thì `modify` về phần còn lại · tầng **chặn**. Nhánh `file_carrier_fault`: `deny` nếu `fault_rows(parcel_id=…)` đã có · **chặn**. Chỉ số số đơn có ≥ 2 dòng hoàn trong ngày (C8) · **phát hiện** |
+| Dòng `basis: manual` trong sổ cái (CSKH hoàn tay) | INCOMPLETE | CSKH hoàn tay qua tổng đài: `ledger_seed` có `T-CSKH-2520 · O-2520 · 20.000đ · manual` và `T-CSKH-2521 · O-2521 · 10.000đ · manual`. Trợ lý không biết: `S5-20@11` hoàn thêm 20.000đ; `S5-21@11` hoàn 22.000đ thay vì 12.000đ còn lại. Nếu CSKH ghi sổ **sau** khi trợ lý đã chạy, cổng trừ phần đã hoàn cũng không thấy | LogiX mất 20.000đ + 10.000đ; VNX bị ghi lỗi lặp; CSKH và chị Oanh không biết đơn bị hoàn từ hai nguồn | Không: hai hệ thống (CSKH và trợ lý) cùng ghi một sổ cái, không ai là chủ "đơn này đã hoàn bao nhiêu" | Code: cổng trừ phần đã hoàn ở dòng trên **gồm cả dòng `manual`** · **chặn** (chỉ khi dòng đã có trong sổ). Quy trình: CSKH ghi dòng `manual` vào sổ cái **trước khi đóng cuộc gọi**; NV-OANH đối soát hằng ngày trong 2 tuần đầu pilot · tầng **vận hành** + **phát hiện** (C7 dòng quy trình, C10 dòng 1) |
+| `amount_vnd` của đơn sỉ so với `auto_limit_vnd` | INCAPABLE | Kho HCM-B2B: đơn từ 2.200.000đ (O-2550), quyền lợi 30.000đ phí + 200.000đ thưởng = 230.000đ > hạn mức tự động 200.000đ (REFUND-v3), không có phê duyệt sẵn. `S5-51@11`: trợ lý đọc xong mới `escalate` "vượt hạn mức tự động, chưa có phê duyệt" (đã tốn 565đ LLM). 12 ticket/ngày, `review_rate` 1,0 | CFO trả cả tiền máy lẫn công người: 10.382đ/ticket > 10.000đ làm tay; cửa hàng sỉ vẫn phải chờ NV-HANH | Một phần: trợ lý tự chuyển người nên không hoàn sai, nhưng **sau** khi đã tốn tiền LLM; cổng ngân sách 1.500đ chỉ chặn ticket dài | Config: `business.pilot_scope` chỉ giữ HN, HCM, DN, CT (vai Sản phẩm và kinh doanh) · tầng **vận hành / giới hạn thiệt hại**: ticket kho sỉ về hàng chờ NV-HANH, không qua trợ lý |
+| `approval_id` (phê duyệt dùng cho khoản > hạn mức) | INVALID | **Nhánh bàn chưa thấy trên trace** (gói S5 không có phê duyệt nào). Nếu làm theo C10 dòng 2 ("xin phê duyệt trước theo lô" cho đơn sỉ), trợ lý tìm phê duyệt theo `order_id`, không có thì **lùi về `lookup_approvals(customer_id=…)`** (`lab10/agent.py`). Khách sỉ C-05 có 6 đơn (O-2550, O-2553, O-2554, O-2557, O-2558, O-2561): một phê duyệt cho O-2550 sẽ bị dùng lại cho 5 đơn kia | Hoàn vượt hạn mức bằng phê duyệt của đơn khác (FM-02 `approval_bypass` của PRD v1.1); NV-HANH đứng tên khoản mình không duyệt; theo `staff_behavior`, có một phê duyệt không hợp lệ trong ngày là nhân viên quay lại kiểm tay 100% | Không có ở cổng vòng 1 | `write_gate` nhánh `issue_refund`: nếu có `approval_id` thì phê duyệt phải khớp `ticket_id`/`order_id`, `status` = `valid`, chưa hết hạn, `max_vnd` ≥ số tiền; không thì `escalate` · **chặn**. Quy trình: phê duyệt theo lô phải ghi từng `order_id` · **vận hành** |
 
 Bắt buộc: ít nhất ba dòng, trong đó **một dòng là nhánh bàn chưa thấy trên trace** lúc viết.
 
@@ -257,9 +258,9 @@ Bắt buộc: ít nhất ba dòng, trong đó **một dòng là nhánh bàn chư
 
 ### Câu 3.3 · Một giả định về môi trường mà người thiết kế đã ngầm tin, nhưng nhiều khả năng sai ngoài thực tế
 
-Giả định (thứ nằm NGOÀI phần mềm): …
+Giả định (thứ nằm NGOÀI phần mềm): **Sổ cái là nơi duy nhất ghi mọi khoản hoàn cho một đơn, và được ghi ngay lúc hoàn**, nên khi trợ lý (hay cổng) đọc sổ cái thì biết đơn đã được hoàn bao nhiêu; và mỗi khách chỉ gửi một yêu cầu cho một lần trễ.
 
-Vì sao có thể sai: …
+Vì sao có thể sai: CSKH vẫn hoàn tay qua tổng đài và chỉ ghi sổ khi rảnh, có khi sau khi trợ lý đã xử lý tin nhắn của chính khách đó (`T-CSKH-2520`, `T-CSKH-2521` trong `ledger_seed`, rồi `S5-20`, `S5-21`); cờ `refund_status` chỉ được batch đêm cập nhật; khách chưa thấy phản hồi thì nhắn lại qua kênh khác (app → zalo → email, `S5-01` → `S5-02` → `S5-03`). Gói S5 chỉ có 2 dòng `manual` và đều đã nằm sẵn trong sổ trước khi trợ lý chạy, nên bộ thử **chưa đo** trường hợp CSKH ghi sổ trễ. Cổng "trừ phần đã hoàn" vì vậy chỉ ngăn được khi giả định này đúng.
 
 ---
 
@@ -323,6 +324,7 @@ python3 -m lab10.grade --incident Sx
 | Nhánh fault tree | Nguyên nhân | Chỗ sửa (hàm + nhánh trong `guards.py`, hoặc khoá trong `operating_gates.json`) | Tầng (phát hiện / chặn / giới hạn thiệt hại / vận hành) | GIẢM khả năng hay NGĂN hẳn? Vì sao | Mã lần chạy sau khi sửa |
 |---|---|---|---|---|---|
 | Kinh doanh — chi phí xử lý tại kho sỉ | HCM-B2B tốn **10.382đ/ticket** ở mốc `prepared`, cao hơn **10.000đ/ticket** nếu làm tay. Nhiều ca vẫn cần CSKH sau khi trợ lý đã đọc. | Đổi `business.pilot_scope` sang danh sách **HN, HCM, DN, CT**. Ticket HCM-B2B đi theo luồng CSKH thủ công. | Vận hành / giới hạn thiệt hại | **Ngăn** ticket được nhận diện thuộc HCM-B2B đi qua trợ lý trong phạm vi đã cấu hình. **Giảm** chi phí trùng ở kho này. Hiệu quả chi phí và độ phủ của phần còn lại cần đo lại. | `[Mã lần chạy chỉ đổi phạm vi]` |
+| Con người — [1b] CSKH hoàn tay ngoài luồng trợ lý | Hai hệ thống (CSKH qua tổng đài và trợ lý) cùng ghi một sổ cái, không ai là chủ "đơn này đã hoàn bao nhiêu"; dòng `manual` có khi được ghi sau khi trợ lý đã hoàn (`T-CSKH-2520` → `S5-20`, `T-CSKH-2521` → `S5-21`) | **Quy trình** (Runbook 4, C11): CSKH ghi dòng `basis: manual` vào sổ cái **trước khi đóng cuộc gọi**, trưởng ca NV-HANH kiểm cuối ca; NV-OANH đối soát sổ cái **hằng ngày** (thay vì hằng tuần) trong 2 tuần đầu pilot. Đi cùng cổng code "trừ phần đã hoàn, gồm cả dòng `manual`" của Kỹ sư cổng (dòng code ở trên) | Vận hành (quy trình ghi sổ) + phát hiện (đối soát ngày) | **Giảm** khả năng, không ngăn hẳn: cổng code chỉ thấy khoản hoàn tay khi CSKH đã ghi sổ, mà việc ghi sổ đúng lúc phụ thuộc con người. Đối soát ngày rút thời gian phát hiện từ tối đa 7 ngày xuống 1 ngày, giới hạn số tiền mất | Không đo bằng `lab10.eval` (quy trình); bằng chứng cổng code: `S5-20`, `S5-21` ở `(mã lần chạy after của Dương)` |
 
 ---
 
@@ -392,26 +394,30 @@ Ghi các dòng đổi sau sự cố. Mỗi dòng vẫn phải có một PIC có 
 
 | # nhóm | Trạng thái mới (Xong / Chưa / Không áp dụng) | Bằng chứng mới (mã lần chạy, mục phiếu, số trong report) | PIC |
 |---|---|---|---|
-| | | | |
-| | | | |
+| 1 · Chất lượng | Chưa → Xong khi lần chạy after của gói S5 không còn hoàn trùng, hoàn quá (`S5-02`, `S5-05`, `S5-20`, `S5-21`) và bộ nền không có ca hỏng mới | `(mã lần chạy after của Dương)` (S5 và base); prepared `R-S5-prepared-20261119-161003-c74adf`: hoàn sai 765.000đ, 15 lỗi oan | Chu Nguyễn Tùng Dương |
+| 2 · Dữ liệu | Chưa: sổ cái có **hai nguồn ghi** (trợ lý `policy` và CSKH `manual`); cờ `refund_status` chỉ cập nhật qua batch đêm. Phải ghi vào bản đồ dữ liệu là bản sao, không phải nguồn sự thật trong ngày | Phiếu C mục C3.5; C5 câu 3.3; `incidents/S5/world_patch.json` → `ledger_seed` | Lê Hiền Hiếu |
+| 4 · Quyền hạn | Chưa: phê duyệt có thể bị dùng lại cho đơn khác của cùng khách (agent lùi về tìm theo `customer_id`); cần kiểm `approval_id` khớp đơn trong `write_gate` trước khi dùng phê duyệt theo lô | Phiếu C mục C4 dòng INVALID (`approval_id`) | Chu Nguyễn Tùng Dương |
+| 6 · Chi phí | Chưa → Xong khi chi phí mỗi ticket ≤ 6.000đ và ROI ≥ 0,5 (đã ký) sau khi cắt HCM-B2B | prepared: 6.834đ/ticket, ROI −0,28, HCM-B2B 10.382đ/ticket > 10.000đ làm tay; after: `(mã lần chạy after của Dương)` | Lê Hiền Hiếu |
+| 7 · Vận hành | Chưa → Xong khi có chỉ số mới trong `monitors.py` (`monitor ✅` trong report) | Runbook 4–5 (mục này); quy trình CSKH ghi sổ trước khi đóng cuộc gọi (C7); chỉ số theo dõi mới (C8) | Đồng Hữu Nguyên Khoa |
+| 8 · Con người, pháp lý | Xong về dữ liệu cá nhân: lộ dữ liệu cá nhân = 0 ở cả ba mốc S5 (cổng 3 và `legal.pii_fields_blocked_to_third_party`). Chưa về bên thứ ba: GHSH, VNX đã bị ghi lỗi lặp, phải báo và huỷ lỗi (Runbook 4) | `R-S5-before-…-c74adf` và `R-S5-prepared-…-c74adf`: `pii_leaks` 0; 15 lỗi oan cho hãng ở prepared | Đồng Hữu Nguyên Khoa |
 
 ### Runbook 4 · Sau sự cố trên thẻ (vòng 2)
 
 | Câu hỏi | Trả lời |
 |---|---|
-| Tín hiệu nào ở Runbook 2 (Phiếu B mục B7.5) lẽ ra phải báo trước sự cố này? Nó đã có chưa? | |
-| Bàn thêm hoặc đổi ngưỡng nào, từ bao nhiêu thành bao nhiêu? | |
-| Bàn đổi gì về **người** (số người trực, ai đứng tên, ai được gọi)? | |
-| Bàn đổi gì về **phạm vi** hoặc **quy trình** (kiểm mẫu, ghi chú giải thích, trần)? | |
-| Nói gì với bên thứ ba bị ảnh hưởng (hãng, shop, người nhận, nhân viên duyệt), ai nói, trong bao lâu? | |
-| Dữ liệu cá nhân nào đã rời hệ thống mà không thu hồi được? Báo cho ai? | |
-| Sự cố lộ ra trước qua số máy đo, phản hồi của người, hay đọc nội dung? Nguồn nào bàn chưa có? | |
+| Tín hiệu nào ở Runbook 2 (Phiếu B mục B7.5) lẽ ra phải báo trước sự cố này? Nó đã có chưa? |  Hai dòng đã có: **"Tiền hoàn sai"** (đỏ khi > 0đ; base S5 là 890.000đ, nên lẽ ra phải báo ngay) và **"Chi phí mỗi ticket so với làm tay"**. Nhưng dòng chi phí chỉ nhìn **tổng**, nên kho HCM-B2B 10.382đ/ticket bị trung bình che đi. **Chưa có:** chi phí theo kho, và số đơn có ≥ 2 dòng hoàn trong ngày (hoàn trùng là lỗi chìm, khách không báo). |
+| Bàn thêm hoặc đổi ngưỡng nào, từ bao nhiêu thành bao nhiêu? |  Thêm "chi phí mỗi ticket **theo kho**" (khối "theo kho và hãng"): vàng > 6.000đ (trần đã ký), đỏ ≥ 10.000đ (`worse_than_manual`) → cắt kho đó khỏi `business.pilot_scope`. Thêm "số đơn có ≥ 2 dòng hoàn trong ngày" (chỉ số mới C8): bình thường 0, đỏ ≥ 1 → NV-OANH kiểm ngay; do trợ lý thì NV-TUNG tắt `issue_refund` (`stop_conditions`). Đối soát của NV-OANH: từ hằng tuần thành **hằng ngày** trong 2 tuần đầu. |
+| Bàn đổi gì về **người** (số người trực, ai đứng tên, ai được gọi)? |  **Không thêm người trực** (giữ `operations.reviewers_on_shift: 1`, NV-HANH): cắt HCM-B2B bớt khoảng 12 ca chuyển người mỗi ngày khỏi hàng chờ, thêm người chỉ làm tăng phí giữ chỗ 30.000đ/ca. Ticket kho sỉ về CSKH làm tay như trước PoC. NV-OANH thêm việc đối soát ngày. CSKH tổng đài (trưởng ca NV-HANH) chịu trách nhiệm ghi sổ trước khi đóng cuộc gọi. |
+| Bàn đổi gì về **phạm vi** hoặc **quy trình** (kiểm mẫu, ghi chú giải thích, trần)? |  Phạm vi: `business.pilot_scope` chỉ còn HN, HCM, DN, CT (cắt HCM-B2B, độ phủ vẫn > 0). Quy trình: CSKH ghi dòng `manual` vào sổ cái trước khi đóng cuộc gọi; phê duyệt theo lô (nếu có) phải ghi từng `order_id` (C4 dòng INVALID). Code đi kèm: cổng trừ phần đã hoàn và không ghi lỗi hãng lần 2 cho cùng kiện (Kỹ sư cổng, C7). Trần tiền hoàn ngày và ngân sách mỗi ticket giữ nguyên. |
+| Nói gì với bên thứ ba bị ảnh hưởng (hãng, shop, người nhận, nhân viên duyệt), ai nói, trong bao lâu? |  **Hãng:** NV-OANH gửi GHSH và VNX danh sách lỗi bị ghi lặp (vd O-2501-P1 cho GHSH; O-2502-P1, O-2520-P1 cho VNX), huỷ các lỗi đó và hoàn tiền phạt, trong **2 ngày làm việc**, trước kỳ đối soát tuần. **Cửa hàng sỉ:** CSKH báo đơn sỉ do người xử lý, nhận trong 60 phút (SLA). **Khách được hoàn trùng:** NV-TUNG quyết, đề xuất không đòi lại (lỗi của LogiX), ghi là tiền mất. **CSKH:** NV-HANH phổ biến quy trình ghi sổ mới ngay đầu ca sau. |
+| Dữ liệu cá nhân nào đã rời hệ thống mà không thu hồi được? Báo cho ai? |  Không có: lộ dữ liệu cá nhân = 0 ở cả base, prepared của gói S5. Payload gửi hãng chỉ còn 4 trường `carrier_notice_fields` (cổng 3 vòng 1 và `legal.pii_fields_blocked_to_third_party`). Không cần báo. |
+| Sự cố lộ ra trước qua số máy đo, phản hồi của người, hay đọc nội dung? Nguồn nào bàn chưa có? |  Qua **phản hồi của người**: CFO đọc bảng chi phí hai tuần, chị Oanh phát hiện đơn hoàn hai, ba lần khi đối soát. Số máy đo đã có (`wrongful_refund_vnd`, chi phí mỗi ticket) nhưng không ai đọc theo ngày và theo kho. **Nguồn chưa có:** đối chiếu sổ cái với nhật ký cuộc gọi tổng đài CSKH, để biết khoản hoàn tay nào chưa được ghi sổ. |
 
 ### Runbook 5 · Ba kịch bản "nếu … thì …" cho tuần đầu chạy thử thật
 
-1. Nếu số ticket tăng gấp ___ lần trong một giờ thì: …
-2. Nếu nhà cung cấp LLM lỗi quá ___ phút thì: …
-3. Nếu người duyệt báo không tin một quyết định của trợ lý thì: …
+1. Nếu số ticket tăng gấp **3** lần trong một giờ thì: NV-HANH theo dõi hàng chờ (6 ca/giờ cho 1 người); hàng chờ ≥ 6 ca hoặc chờ lâu nhất ≥ 45 phút → NV-HANH gọi thêm 1 người duyệt (B7.6); chờ ≥ 60 phút hoặc có 1 ca bị ùn → NV-TUNG thu hẹp `business.pilot_scope`, cắt kho có tỉ lệ chuyển người cao nhất theo khối "theo kho và hãng". Không nâng trần tiền hoàn ngày.
+2. Nếu nhà cung cấp LLM lỗi quá **15** phút thì: NV-TUNG tắt `file_carrier_fault` và `issue_refund` (cổng 2 và 3 đã chặn hoàn tiền và ghi lỗi hãng theo `fail_open`, nhưng tắt hẳn để không phụ thuộc cổng); mọi ticket vào hàng chờ NV-HANH, khách nhận tin "đã chuyển người xử lý" (`send_reply` giữ bật). Lỗi quá 60 phút thì áp kịch bản 1 (gọi thêm người). Bật lại khi `llm_error` về 0 trong 15 phút, NV-TUNG và NV-HANH cùng ký.
+3. Nếu người duyệt báo không tin một quyết định của trợ lý thì: NV-HANH ghi `ticket@seed` lên `#logix-pilot-alerts`; NV-TUNG đọc trace trong 30 phút. Quyết định sai → tính là sự cố, áp `stop_conditions`. Quyết định đúng nhưng khó hiểu → bật `operations.decision_note` (ghi chú giải thích, kiểm lại chỉ tốn 0,4 ca) và kiểm mẫu ≥ 10% (`staff_behavior.trust_conditions`), để nhân viên không quay lại kiểm tay 100%.
 
 ---
 
